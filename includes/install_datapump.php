@@ -14,7 +14,7 @@ $gBitSmarty->assign( 'next_step',$step );
 
 $gBitUser->mUserId = ROOT_USER_ID;
 
-$pumpList = array();
+$pumpList = [];
 foreach( array_keys( $gBitSystem->mPackages ) as $package ) {
 	if( $gBitInstaller->isPackageActive( $package ) ) {
 		$file = constant( strtoupper( $package ).'_PKG_PATH' ).'admin/pump_'.$package.'_inc.php';
@@ -29,7 +29,7 @@ $gBitSmarty->assign( 'pumpList', $pumpList );
  * datapump setup
  */
 if( isset( $_REQUEST['fSubmitDataPump'] ) ) {
-	$pumpedData = array();
+	$pumpedData = [];
 	if( !empty( $_REQUEST['pump_package'] ) ) {
 		foreach( $_REQUEST['pump_package'] as $package ) {
 			if( $gBitInstaller->isPackageActive( $package ) ) {
@@ -52,4 +52,3 @@ if( isset( $_REQUEST['fSubmitDataPump'] ) ) {
 	header( "Location: ".INSTALL_PKG_URL."install.php?step=$goto" );
 	die;
 }
-?>

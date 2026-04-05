@@ -11,4 +11,3 @@
 
 // assign next step in installation process
 $gBitSmarty->assign( 'next_step',$step + 1 );
-?>

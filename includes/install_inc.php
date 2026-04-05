@@ -1,4 +1,9 @@
 <?php
+
+use Bitweaver\BitSystem;
+use Bitweaver\Plugins\ResourceBitpackage;
+use Bitweaver\Themes\BitSmarty;
+use Bitweaver\Themes\BitweaverExtension;
 /**
  * @version $Header$
  * @package install
@@ -18,32 +23,33 @@ function set_menu( $pInstallFiles, $pStep ) {
 	// here we set up the menu
 	for( $done = 0; $done < $pStep; $done++ ) {
 		$pInstallFiles[$done]['state'] = 'complete';
-		$pInstallFiles[$done]['icon'] = 'fa-check';
+		$pInstallFiles[$done]['icon'] = 'icon-ok';
 	}
 
 	// if the page is done, we can display the menu item as done and increase the progress bar
 	if( $failedcommands || !empty( $error ) ) {
 		$pInstallFiles[$pStep]['state'] = 'error';
-		$pInstallFiles[$pStep]['icon'] = 'fa-octagon-exclamation';
+		$pInstallFiles[$pStep]['icon'] = 'dialog-error';
 	} elseif( !empty( $warning ) ) {
 		$pInstallFiles[$pStep]['state'] = 'warning';
-		$pInstallFiles[$pStep]['icon'] = 'fa-triangle-exclamation';
+		$pInstallFiles[$pStep]['icon'] = 'dialog-warning';
 	} elseif( $app == "_done" ) {
 		$pInstallFiles[$pStep]['state'] = 'complete';
-		$pInstallFiles[$pStep]['icon'] = 'fa-check';
+		$pInstallFiles[$pStep]['icon'] = 'icon-ok';
 		$done++;
 	} else {
 		$pInstallFiles[$pStep]['state'] = 'current';
-		$pInstallFiles[$pStep]['icon'] = 'fa-angle-right';
+		$pInstallFiles[$pStep]['icon'] = 'media-playback-start';
 	}
 
 	foreach( $pInstallFiles as $key => $menu_step ) {
 		if( !isset( $menu_step['state'] ) ) {
 			if( !empty( $gBitDbType ) && $gBitUser->isAdmin() && !$_SESSION['first_install'] ) {
 				$pInstallFiles[$key]['state'] = 'complete';
-				$pInstallFiles[$key]['icon'] = 'fa-check';
+				$pInstallFiles[$key]['icon'] = 'icon-ok';
 			} else {
 				$pInstallFiles[$key]['state'] = 'uncompleted';
+				$pInstallFiles[$key]['icon'] = 'spacer';
 			}
 		}
 	}
@@ -51,6 +57,7 @@ function set_menu( $pInstallFiles, $pStep ) {
 	// assign all this work to the template
 	$gBitSmarty->assign( 'step', $pStep );
 	$gBitSmarty->assign( 'menu_steps', $pInstallFiles );
+	$gBitSmarty->assign( 'progress', ceil( 100 / ( count( $pInstallFiles ) ) * $done ) );
 
 	return $pInstallFiles;
 }
@@ -60,27 +67,30 @@ function set_menu( $pInstallFiles, $pStep ) {
  */
 define( 'BIT_INSTALL', 'TRUE' );
 // Uncomment to switch to role team model ...
-//define( 'ROLE_MODEL', 'TRUE' );
+define( 'ROLE_MODEL', 'TRUE' );
 global $gBitSmarty;
 
 // use relative path if no CONFIG_INC path specified - we know we are in installer here...
 $config_file = empty($_SERVER['CONFIG_INC']) ? '../config/kernel/config_inc.php' : $_SERVER['CONFIG_INC'];
 // We can't call clean_file_path here even though we would like to.
-$config_file = (strpos($_SERVER["SERVER_SOFTWARE"],"IIS") ? str_replace( "/", "\\", $config_file) : $config_file);
+$config_file = strpos($_SERVER["SERVER_SOFTWARE"],"IIS") ? str_replace( "/", "\\", $config_file) : $config_file;
 
 // DO THIS FIRST! Before we include any kernel stuff to avoid duplicate defines
 if( isset( $_REQUEST['submit_db_info'] ) ) {
-	if ( $_REQUEST['db'] == "firebird" && empty( $gBitDbName ) ) {
+	if ( $_REQUEST['db'] == "firebird" || $_REQUEST['db'] == "pdo" && empty( $gBitDbName ) ) {
 		{
 			//	Should only be called when creating the datatabse
-			require_once("create_firebird_database.php");
-			FirebirdCreateDB($_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name'], $_REQUEST['fbpath']);
+			require_once "create_firebird_database.php";
+			FirebirdCreateDB($_REQUEST['db'] == "pdo" ? "localhost" : $_REQUEST['host'], $_REQUEST['user'], $_REQUEST['pass'], $_REQUEST['name'], $_REQUEST['fbpath']);
 		}
 	}
 	if ( empty( $gBitDbType ) ) {
 		$tmpHost = $_REQUEST['host'];
-		require_once( 'create_config_inc.php' );
-		$createHash = array(
+		if ($_REQUEST['db'] == 'mssql') { // pull doubled up slashes from config
+			$tmpHost = stripslashes($tmpHost);
+		}
+		require_once 'create_config_inc.php';
+		$createHash = [
 			"gBitDbType"            => $_REQUEST['db'],
 			"gBitDbHost"            => $tmpHost,
 			"gBitDbUser"            => $_REQUEST['user'],
@@ -89,21 +99,21 @@ if( isset( $_REQUEST['submit_db_info'] ) ) {
 			"gBitDbCaseSensitivity" => $_REQUEST['dbcase'],
 			"bit_db_prefix"         => $_REQUEST['prefix'],
 			"bit_root_url"          => $_REQUEST['baseurl'],
-			"auto_bug_submit"       => !empty( $_REQUEST['auto_bug_submit'] ) ? 'TRUE' : 'FALSE',
-			"is_live"               => !empty( $_REQUEST['is_live'] ) ? 'TRUE' : 'FALSE',
-		);
+			"auto_bug_submit"       => !empty( $_REQUEST['auto_bug_submit'] ) ? 'true' : 'false',
+			"is_live"               => !empty( $_REQUEST['is_live'] ) ? 'true' : 'false',
+		];
 		create_config( $createHash );
-		include( $config_file );
+		include $config_file;
 	}
 }
-require_once( '../kernel/includes/setup_inc.php' );
-require_once( INSTALL_PKG_CLASS_PATH.'BitInstaller.php' );
+require_once '../kernel/includes/setup_inc.php';
+use \Bitweaver\Install\BitInstaller;
 
-if ( defined( 'ROLE_MODEL' ) ) {
-	require_once( USERS_PKG_CLASS_PATH.'RoleUser.php' );
+/* if ( defined( 'ROLE_MODEL' ) ) {
+	use Bitweaver\Users\RoleUser;
 } else {
-	require_once( USERS_PKG_CLASS_PATH.'BitUser.php' );
-}
+	use Bitweaver\Users\BitUser;
+} */
 
 // set some preferences during installation
 global $gBitInstaller, $gBitSystem, $gBitThemes;
@@ -125,9 +135,9 @@ $gBitSystem->setConfig( 'site_online_help', 'y' );
 $gBitSystem->setConfig( 'site_form_help', 'y' );
 $gBitSystem->setConfig( 'site_help_popup', 'n' );
 
-$commands = array();
+$commands = [];
 global $failedcommands;
-$failedcommands = array();
+$failedcommands = [];
 global $gBitLanguage;
 $gBitLanguage->mLanguage = 'en';
 
@@ -136,18 +146,16 @@ if( empty( $_SERVER['SCRIPT_NAME'] )) {
 	$_SERVER['SCRIPT_NAME'] = $_SERVER['SCRIPT_URL'];
 }
 
-if( empty( $_REQUEST['baseurl'] )) {
-	$bit_root_url = substr( $_SERVER['SCRIPT_NAME'], 0, strpos( $_SERVER['SCRIPT_NAME'], 'install/' ));
-} else {
-	$bit_root_url = BIT_ROOT_URL;
-}
+$bit_root_url = empty( $_REQUEST['baseurl'] )
+	? substr( $_SERVER['SCRIPT_NAME'], 0, strpos( $_SERVER['SCRIPT_NAME'], 'install/' ))
+	: BIT_ROOT_URL;
 
 global $gBitUser;
 
 if( !empty( $_POST['signin'] ) ) {
 	$gBitInstaller->login( $_REQUEST['user'], $_REQUEST['pass'] );	
 } elseif( is_object( $gBitUser ) && !empty( $_COOKIE[$gBitUser->getSiteCookieName()] ) && ( $gBitUser->mUserId = $gBitUser->getUserIdFromCookieHash( $_COOKIE[$gBitUser->getSiteCookieName()] ))) {
-	$userInfo = $gBitUser->getUserInfo( array( 'user_id' => $gBitUser->mUserId ) );
+	$userInfo = $gBitUser->getUserInfo( [ 'user_id' => $gBitUser->mUserId ] );
 
 	if( $userInfo['user_id'] != ANONYMOUS_USER_ID ) {
 		// User is valid and not due to change pass..

@@ -14,7 +14,7 @@ $app = '_done';
 $gBitSmarty->assign( 'next_step',$step );
 
 if( isset( $_REQUEST['enter_bitweaver'] ) ) {
-	$_SESSION = NULL;
+	$_SESSION = null;
 	header( 'Location: '.BIT_ROOT_URL );
 	die;
 } elseif( isset( $_REQUEST['continue_install'] ) ) {
@@ -23,4 +23,3 @@ if( isset( $_REQUEST['enter_bitweaver'] ) ) {
 } else {
 	$gBitSmarty->assign( 'next_step',$step );
 }
-?>

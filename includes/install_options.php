@@ -9,7 +9,7 @@
 // All Rights Reserved. See below for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See http://www.gnu.org/copyleft/lesser.html for details.
 
-//$gBitSmarty->assign( 'next_step',$step );
+$gBitSmarty->assign( 'next_step',$step );
 if( isset( $_REQUEST['upgrade'] ) ) {
 	$_SESSION['upgrade'] = TRUE;
 	$_SESSION['first_install'] = TRUE;
@@ -34,4 +34,3 @@ if( isset( $_REQUEST['upgrade'] ) ) {
 } else {
 	$gBitSmarty->assign( 'next_step',$step );
 }
-?>

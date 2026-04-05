@@ -25,7 +25,7 @@
 						<ul>
 							{foreach from=$package.tables item=table}
 								<li>
-									<a style="float:right" href="#" onclick="BitBase.toggleElementDisplay('{$table.name}','block');return false">show table details</a> {$table.name}<br />
+									<a style="float:right" href="#" onclick="\Bitweaver\BitBase.toggleElementDisplay('{$table.name}','block');return false">show table details</a> {$table.name}<br />
 									<div id="{$table.name}" style="display:none;">
 										<code>{$table.sql|nl2br}</code>
 									</div>
@@ -78,7 +78,7 @@
 
 
 	{legend legend="Fix Permissioning"}
-		{if $delPerms || $insPerms}
+		{if $delPerms or $insPerms}
 			<p class="alert alert-block">
 				Some permissions require your attention.
 				{if $insPerms}
@@ -129,7 +129,7 @@
 			{/if}
 		</table>
 		{/if}
-		{if empty( $insPerms ) && empty( $delPerms )}
+		{if empty( $insPerms ) and empty( $delPerms )}
 			<p class="alert alert-success">
 				The permissioning system in your installation is up to date and does not require any adjustments. Even though this is true, we recommend you visit the {smartlink ititle="Permission Maintenance" ipackage=users ifile="admin/permissions.php"} page at some point to ensure that all permissions are active.
 			</p>
@@ -178,7 +178,7 @@
 			</p>
 		{/if}
 
-		{if $delPerms || $insPerms || $serviceList}
+		{if $delPerms or $insPerms or $serviceList}
 			<div class="form-group">
 		{forminput}
 					<input type="submit" class="btn btn-primary" name="resolve_conflicts" value="Resolve Issues" />
@@ -187,7 +187,7 @@
 
 			<div class="form-group">
 				{forminput label="checkbox"}
-					<input type="checkbox" name="debug" id="debug" value="true" /> {tr}Debug mode{/tr}
+					<input type="checkbox" name="debug" id="debug" value="true" /> Debug mode
 					{formhelp note="Display SQL statements."}
 				{/forminput}
 			</div>

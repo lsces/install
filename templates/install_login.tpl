@@ -21,7 +21,7 @@
 
 	<div class="form-group">
 		{forminput}
-			<input type="submit" class="btn btn-primary" name="signin" value="{tr}Log in to {$gBitSystem->getConfig('site_title')|default:"this site"}{/tr}" />
+			<input type="submit" class="btn btn-primary" name="signin" value="Log in to {$gBitSystem->getConfig('site_title')|default:"this site"}" />
 		{/forminput}
 	</div>
 {/form}

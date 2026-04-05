@@ -7,7 +7,7 @@
 
 $gBitSmarty->assign( 'next_step', $step );
 
-$errors = $success = array();
+$errors = $success = [];
 
 // load up all available package upgrades that we have
 $gBitInstaller->loadAllUpgradeFiles();
@@ -44,4 +44,3 @@ $gBitSmarty->assign( 'packageUpgrades', $gBitInstaller->mPackageUpgrades );
 $gBitSmarty->assign( 'schema', $gBitInstaller->mPackages );
 $gBitSmarty->assign( 'success', $success );
 $gBitSmarty->assign( 'errors', $errors );
-?>

@@ -16,4 +16,3 @@ if( !empty( $_REQUEST['install'] ) ) {
 	die;
 }
 $gBitSmarty->assign( 'next_step',$step );
-?>

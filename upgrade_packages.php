@@ -61,12 +61,12 @@ $upgradePath = array (
 $gBitSmarty->assign( 'upgradeFrom', $gUpgradeFrom );
 $gBitSmarty->assign( 'upgradeTo', $gUpgradeTo );
 
-$upPackages = array();
+$upPackages = [];
 
 if( !empty( $_REQUEST['upgrade'] ) ) {
 	if( isset( $upgradePath[$_REQUEST['upgrade_from']] ) ) {
 		if( !empty( $gDebug ) || !empty( $_REQUEST['debug'] ) ) {
-			$gBitInstaller->mDb->debug();
+			$gBitInstaller->debug();
 		}
 
 		foreach( $upgradePath[$_REQUEST['upgrade_from']] as $from=>$to ) {
@@ -74,7 +74,7 @@ if( !empty( $_REQUEST['upgrade'] ) ) {
 			$gUpgradeFrom = $from;
 			$gUpgradeTo = $to;
 
-			$gBitInstaller->scanPackages( 'admin/upgrade_inc.php', FALSE );
+			$gBitInstaller->scanPackages( 'admin/upgrade_inc.php', false );
 			$firstPackages = array_flip( array( 'kernel', 'users', 'categories', 'liberty', 'wiki', 'blogs' ) );
 			$secondPackages = array_flip( $upgrading );
 
@@ -96,7 +96,7 @@ if( !empty( $_REQUEST['upgrade'] ) ) {
 		}
 		// If server supports InnoDB for MySql and selected for use
 		// we traverse all tables in db after upgrade and change engine if needed
-		if( isset( $_SESSION['use_innodb'] ) && $_SESSION['use_innodb'] == TRUE ) {
+		if( isset( $_SESSION['use_innodb'] ) && $_SESSION['use_innodb'] == true ) {
 			$rs = $gBitInstaller->mDb->Execute("SHOW TABLE STATUS");
 			while ( !$rs->EOF) {
 				$row = $rs->GetRowAssoc(false);
@@ -120,4 +120,3 @@ if( !empty( $_REQUEST['upgrade'] ) ) {
 	$app = '_done';
 	$gBitSmarty->assign( 'next_step',$step + 1 );
 }
-?>

@@ -1,4 +1,6 @@
 <?php
+
+use Bitweaver\KernelTools;
 /**
  * check what db servers are available and display them accordingly - only seems to work with *nix
  *
@@ -6,7 +8,7 @@
  * @subpackage functions
  */
 $gBitDbCaseSensitivity = TRUE;
-$dbtodsn = array();
+$dbtodsn = [];
 if( function_exists( 'mysql_connect' ) ) {
 	$dbtodsn['mysql'] = 'MySQL';
 }
@@ -33,10 +35,21 @@ if( function_exists( 'fbird_connect' ) ) {
 	$dbtodsn['firebird'] = 'Firebird';
 	if ( !empty($_REQUEST['fbpath']) ) $fbpath = $_REQUEST['fbpath'];
 	if ( empty($fbpath) ) {
-		if ( is_windows() )
-			$fbpath = 'c:\Program Files\Firebird\Firebird_2_1\bin\isql';
-		else
-			$fbpath = '/opt/firebird/bin/isql';
+		$fbpath = ( KernelTools::is_windows() ) ? 'c:\Program Files\Firebird\Firebird_5\bin\isql' : '/opt/firebird/bin/isql';
+	}
+	$gBitSmarty->assign( 'fbpath', $fbpath );
+	if ( empty($gBitDbName) ) { $gBitDbName = 'bitweaver'; }
+	$gBitDbCaseSensitivity = FALSE;
+	if ( empty($gBitDbUser) ) {
+		$gBitDbUser = 'SYSDBA';
+		$gBitDbPassword = 'masterkey';
+	}
+} 
+if( extension_loaded( 'pdo_firebird' ) ) {
+	$dbtodsn['pdo'] = 'PDO Firebird';
+	if ( !empty($_REQUEST['fbpath']) ) $fbpath = $_REQUEST['fbpath'];
+	if ( empty($fbpath) ) {
+		$fbpath = ( KernelTools::is_windows() ) ? 'c:\Program Files\Firebird\Firebird_5\bin\isql' : '/opt/firebird/bin/isql';
 	}
 	$gBitSmarty->assign( 'fbpath', $fbpath );
 	if ( empty($gBitDbName) ) { $gBitDbName = 'bitweaver'; }
@@ -49,7 +62,7 @@ if( function_exists( 'fbird_connect' ) ) {
 if( function_exists( 'sqlite_open' ) ) {
 	$dbtodsn['sqlite'] = 'SQLLite';
 }
-$gBitSmarty->assignByRef('dbservers', $dbtodsn);
+$gBitSmarty->assign('dbservers', $dbtodsn);
 
 $gBitSmarty->assign( 'gBitDbType', $gBitDbType );
 $gBitSmarty->assign( 'gBitDbHost', $gBitDbHost );
@@ -65,4 +78,3 @@ if( defined( 'AUTO_BUG_SUBMIT' ) ) {
 
 $gBitSmarty->assign( 'gBitDbPassword_input', $gBitDbPassword );
 $gBitSmarty->assign( 'gBitDbPassword_print', preg_replace( '/./','&bull;',$gBitDbPassword ) );
-?>

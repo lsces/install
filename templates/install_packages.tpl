@@ -23,13 +23,13 @@
 
 				{* include required packages during first install *}
 				{foreach from=$schema key=package item=item}
-					{if $item.required && !$item.installed}
+					{if $item.required|default:false and !$item.installed}
 						<input type="hidden" name="packages[]" value="{$package}" />
 					{/if}
 				{/foreach}
 
 				{foreach from=$schema key=package item=item}
-					{if !$item.installed and !$item.required}
+					{if !$item.installed and !$item.required|default:false}
 						{assign var=new_packages value=true}
 					{/if}
 				{/foreach}
@@ -43,7 +43,7 @@
 
 					<div class="form-group">
 						{forminput label="checkbox"}
-							<script type="text/javascript">/* <![CDATA[ */
+							<script>/* <![CDATA[ */
 								document.write("<input name=\"switcher\" id=\"switcher\" type=\"checkbox\" checked onclick=\"BitBase.switchCheckboxes(this.form.id,'packages[]','switcher')\" /> Batch (de)select all Packages and Services on this page");
 							/* ]]> */</script>
 						{/forminput}
@@ -51,14 +51,14 @@
 
 					<div class="bit-columns">
 					{foreach from=$schema key=package item=item}
-						{if !$item.installed and !$item.required}
+						{if !$item.installed and !$item.required|default:false}
 							<div class="bit-column-cell">
 							<div class="well">
-								<label class="control-label" for="{$package}">{biticon ipackage=$package iname="pkg_$package" iexplain=$package class="img-responsive"}</label>
+								<label class="control-label" for="{$package}">{biticon ipackage=$package iname="pkg_$package" iexplain=$package}</label>
 								{forminput label="checkbox"}
 									<input type="checkbox" name="packages[]" value="{$package}" id="{$package}" checked="checked" /> <strong>{$package|capitalize}</strong></label>
-									{formhelp note=$item.info is_installer=1}
-									{formhelp note="<strong>Location</strong>: `$item.url`"}
+									{formhelp note=$item.info|default:'' is_installer=1}
+									{formhelp note="<strong>Location</strong>: `$item.url|default:''`"}
 									{formhelp package=$package}
 								{/forminput}
 							</div>
@@ -69,7 +69,7 @@
 					{/legend}
 				{elseif $first_install}
 					<h2>Core System Installation</h2>
-					<p>{tr}Only the core required packages will be installed{/tr}</p>
+					<p>Only the core required packages will be installed</p>
 				{else}
 					<h2>No Additional Packages</h2>
 
@@ -91,7 +91,7 @@
 				{/if}
 				<div class="form-group">
 					{forminput label="checkbox"}
-						<input type="checkbox" name="debug" value="true" /> {tr}Debug mode{/tr}
+						<input type="checkbox" name="debug" value="true" /> Debug mode
 						{formhelp note="Display SQL statements."}
 					{/forminput}
 				</div>
@@ -143,14 +143,14 @@
 
 					<div class="bit-columns">
 					{foreach from=$schema key=package item=item}
-						{if $item.tables || $item.defaults}
-							{if $item.installed and !$item.required}
+						{if !empty($item.tables) or !empty($item.defaults)}
+							{if $item.installed and !$item.required|default:false}
 								<div class="bit-column-cell well">
 									<label for="{$package}">{biticon ipackage=$package iname="pkg_$package" iexplain=$package}</label>
 									{forminput label="checkbox"}
 										<input type="checkbox" name="packages[]" value="{$package}" id="{$package}" /> <strong>{$package|capitalize}</strong>
-										{formhelp note=$item.info is_installer=1}
-										{formhelp note="<strong>Location</strong>: `$item.url`"}
+										{formhelp note=$item.info|default:'' is_installer=1}
+										{formhelp note="<strong>Location</strong>: `$item.url|default:''`"}
 										{formhelp package=$package}
 									{/forminput}
 								</div>
@@ -189,15 +189,15 @@
 
 				<div class="bit-columns">
 				{foreach from=$schema key=package item=item}
-					{if $item.required}
+					{if $item.required|default:false}
 						<div class="bit-column-cell well">
 							<label class="control-label">
 								{biticon ipackage=$package iname="pkg_$package" iexplain=$package}
 							</label>
 							{forminput}
 								<strong>{$package|capitalize}</strong>
-								{formhelp note=$item.info is_installer=1}
-								{formhelp note="<strong>Location</strong>: `$item.url`"}
+								{formhelp note=$item.info|default:'' is_installer=1}
+								{formhelp note="<strong>Location</strong>: `$item.url|default:''`"}
 								{formhelp package=$package}
 							{/forminput}
 						</div>

@@ -1,4 +1,6 @@
 <?php
+
+use Bitweaver\Users\RoleUser;
 /**
  * @version $Header$
  * @package install
@@ -13,14 +15,14 @@
 $gBitSmarty->assign( 'next_step', $step );
 
 if( !empty( $_REQUEST['admin_submit'] )) {
-	$mail = $errors = array();
+	$mail = $errors = [];
 	if( empty( $_REQUEST['login'] ) ) {
 		$errors['login'] = "You must specify an administrator name.";
 	}
 	if( empty( $_REQUEST['email'] ) ) {
 		$errors['email'] = "You must specify an email address.";
 	} else {
-		BitUser::verifyAnonEmail( $_REQUEST['email'], $errors );
+		RoleUser::verifyAnonEmail( $_REQUEST['email'], $errors );
 	}
 
 	if( $_REQUEST['password'] != $_REQUEST['pass_confirm'] ) {
@@ -77,4 +79,3 @@ if( !empty( $_REQUEST['admin_submit'] )) {
 	$gBitSmarty->assign( 'user', '');
 	$gBitSmarty->assign( 'email', 'admin@localhost');
 }
-?>

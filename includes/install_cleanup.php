@@ -10,7 +10,7 @@ $gBitSmarty->assign( 'next_step', $step );
 
 $schema = $gBitInstaller->mPackages;
 ksort( $schema );
-$gBitSmarty->assignByRef( 'schema', $schema );
+$gBitSmarty->assign( 'schema', $schema );
 
 
 
@@ -31,12 +31,8 @@ while( !$result->EOF ) {
 	foreach( $result->fields as $r ) {
 		$bitPerms[$result->fields['perm_name']][] = $r;
 	}
-	if ( defined( 'ROLE_MODEL' ) ) {
-		$bitPerms[$result->fields['perm_name']]['sql'][] = "DELETE FROM `".BIT_DB_PREFIX."users_role_permissions` WHERE `perm_name`='".$result->fields['perm_name']."'";
-	} else {
-		$bitPerms[$result->fields['perm_name']]['sql'][] = "DELETE FROM `".BIT_DB_PREFIX."users_group_permissions` WHERE `perm_name`='".$result->fields['perm_name']."'";
-	}
-	$bitPerms[$result->fields['perm_name']]['sql'][] = "DELETE FROM `".BIT_DB_PREFIX."users_permissions` WHERE `perm_name`='".$result->fields['perm_name']."'";
+	$bitPerms[$result->fields['perm_name']]['sql'][] = ( defined( 'ROLE_MODEL' ) ) ? "DELETE FROM `" . BIT_DB_PREFIX . "users_role_permissions` WHERE `perm_name`='" . $result->fields['perm_name'] . "'" : "DELETE FROM `" . BIT_DB_PREFIX . "users_group_permissions` WHERE `perm_name`='" . $result->fields['perm_name'] . "'";
+	$bitPerms[$result->fields['perm_name']]['sql'][] = "DELETE FROM `" . BIT_DB_PREFIX . "users_permissions` WHERE `perm_name`='" . $result->fields['perm_name'] . "'";
 	$result->MoveNext();
 }
 
@@ -44,11 +40,11 @@ while( !$result->EOF ) {
 // update these without consulting the user. this is purely backend stuff, has
 // no outcome on the site itself but determines what the default permission
 // level is. the user can never modify these settings.
-foreach( array_keys( $gBitInstaller->mPermHash ) as $perm ) {
+foreach ( array_keys( $gBitInstaller->mPermHash ) as $perm ) {
 	// permission level is stored in [2]
-	$bindVars = array();
-	if( !empty( $bitPerms[$perm] ) && $gBitInstaller->mPermHash[$perm][2] != $bitPerms[$perm][2] ) {
-		$query = "UPDATE `".BIT_DB_PREFIX."users_permissions` SET `perm_level` = ? WHERE `perm_name` = ?";
+	$bindVars = [];
+	if (!empty( $bitPerms[$perm] ) && $gBitInstaller->mPermHash[$perm][2] != $bitPerms[$perm][2]) {
+		$query = "UPDATE `" . BIT_DB_PREFIX . "users_permissions` SET `perm_level` = ? WHERE `perm_name` = ?";
 		$bindVars[] = $gBitInstaller->mPermHash[$perm][2];
 		$bindVars[] = $perm;
 		$gBitInstaller->mDb->query( $query, $bindVars );
@@ -57,24 +53,22 @@ foreach( array_keys( $gBitInstaller->mPermHash ) as $perm ) {
 
 // compare both perm arrays with each other and work out what permissions need
 // to be added and which ones removed
-$insPerms = $delPerms = array();
-foreach( array_keys( $gBitInstaller->mPermHash ) as $perm ) {
-	if( !in_array( $perm, array_keys( $bitPerms ))) {
-		if( $gBitInstaller->isInstalled( $gBitInstaller->mPermHash[$perm][3] )) {
+$insPerms = $delPerms = [];
+foreach ( array_keys( $gBitInstaller->mPermHash ) as $perm ) {
+	if (!in_array( $perm, array_keys( $bitPerms ) )) {
+		if ($gBitInstaller->isInstalled( $gBitInstaller->mPermHash[$perm][3] )) {
 			$insPerms[$perm] = $gBitInstaller->mPermHash[$perm];
 		}
 	}
 }
 
-foreach( array_keys( $bitPerms ) as $perm ) {
-	if( !in_array( $perm, array_keys( $gBitInstaller->mPermHash ) ) ) {
+foreach ( array_keys( $bitPerms ) as $perm ) {
+	if (!in_array( $perm, array_keys( $gBitInstaller->mPermHash ) )) {
 		$delPerms[$perm] = $bitPerms[$perm];
 	}
 }
 $gBitSmarty->assign( 'delPerms', $delPerms );
 $gBitSmarty->assign( 'insPerms', $insPerms );
-
-
 
 // ===================== Services =====================
 // check if we have installed more than one service of any given type
@@ -85,7 +79,7 @@ $gBitSmarty->assign( 'insPerms', $insPerms );
 // service type. This could revert back with time. For now this is commented
 // out.
 /*
-$serviceList = array();
+$serviceList = [];
 if( !empty( $gLibertySystem->mServices ) ) {
 	foreach( $gLibertySystem->mServices as $service_name => $service ) {
 		if( count( $service ) > 1 ) {
@@ -95,34 +89,25 @@ if( !empty( $gLibertySystem->mServices ) ) {
 }
 */
 
-
-
 // ===================== Process Form =====================
 // create missing tables if possible
-if( !empty(  $_REQUEST['create_tables'] ) && !empty( $dbIntegrity )) {
-	$gBitInstallDb = &ADONewConnection( $gBitDbType );
+if (!empty( $_REQUEST['create_tables'] ) && !empty( $dbIntegrity )) {
+	$gBitInstallDb = ADONewConnection( $gBitDbType );
 
-	if( $gBitInstallDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbName )) {
-		$dict = NewDataDictionary( $gBitInstallDb );
+	if ($gBitInstallDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbType != 'pdo' ? $gBitDbName : NULL )) {
+		$dict = NewDataDictionary( $gBitInstallDb, 'firebird' );
 
-		if( !$gBitInstaller->mDb->getCaseSensitivity() ) {
+		if (!$gBitInstaller->mDb->getCaseSensitivity()) {
 			$dict->connection->nameQuote = '';
 		}
 
-		if( !empty( $gDebug ) || !empty( $_REQUEST['debug'] )) {
+		if (!empty( $gDebug ) || !empty( $_REQUEST['debug'] )) {
 			$gBitInstallDb->debug = 99;
 		}
 
 		// If we use MySql check which storage engine to use
-		if( isset( $_SESSION['use_innodb'] ) ){
-			if( $_SESSION['use_innodb'] == TRUE ) {
-				$build = array('NEW', 'MYSQL' => 'ENGINE=INNODB');
-			} else {
-				$build = array('NEW', 'MYSQL' => 'ENGINE=MYISAM');
-			}
-		} else {
-			$build = 'NEW';
-		}
+		$build = isset( $_SESSION['use_innodb'] ) 
+			? ( ( $_SESSION['use_innodb'] == true ) ? [ 'NEW', 'MYSQL' => 'ENGINE=INNODB' ] : [ 'NEW', 'MYSQL' => 'ENGINE=MYISAM' ] ) : 'NEW';
 
 		$tablePrefix = $gBitInstaller->getTablePrefix();
 		foreach( $dbIntegrity as $package => $info ) {
@@ -145,8 +130,8 @@ if( !empty(  $_REQUEST['resolve_conflicts'] ) ) {
 		$gBitInstallDb->debug = 99;
 	}
 	// === Permissions
-	$fixedPermissions = array();
-	$permMap = array();
+	$fixedPermissions = [];
+	$permMap = [];
 	$permMap['basic'] = ANONYMOUS_TEAM_ID;
 	$permMap['registered'] = 3;
 	$permMap['editors'] = 2;
@@ -167,7 +152,7 @@ if( !empty(  $_REQUEST['resolve_conflicts'] ) ) {
 					if ( defined( 'ROLE_MODEL' ) ) {
 						$gBitUser->assignPermissionToRole( $perm, $permMap[$insPerms[$perm][2]] );
 					} else {
-						$gBitUser->assignPermissionToGroup( $perm, $permMap[$insPerms[$perm][2]] );
+						$gBitUser->assignPermissionToRole( $perm, $permMap[$insPerms[$perm][2]] );
 					}
 				}
 			}
@@ -176,10 +161,10 @@ if( !empty(  $_REQUEST['resolve_conflicts'] ) ) {
 	$gBitSmarty->assign( 'fixedPermissions', $fixedPermissions );
 
 	// === Services
-	$deActivated = array();
+	$deActivated = [];
 	foreach( $serviceList as $service ) {
 		foreach( array_keys( $service ) as $package ) {
-			$packages = !empty( $_REQUEST['packages'] ) ? $_REQUEST['packages'] : array();
+			$packages = !empty( $_REQUEST['packages'] ) ? $_REQUEST['packages'] : [];
 			if( !in_array( $package, $packages )) {
 				$gBitSystem->storeConfig( 'package_'.$package, 'n', KERNEL_PKG_NAME );
 				$deActivated[] = $package;
@@ -211,25 +196,24 @@ $gBitSmarty->assign( 'dbIntegrity', $dbIntegrity );
  */
 function install_check_database_integrity( $pDbTables ) {
 	global $gBitInstaller;
-	$ret = array();
+	$ret = [];
 	if( !empty( $pDbTables['missing'] ) && is_array( $pDbTables['missing'] )) {
 		foreach( array_keys( $pDbTables['missing'] ) as $package ) {
 			// we can't use the 'installed' flag in $gBitInstaller->mPackages[$package] because that is set to 'not installed' as soon as a table is missing
 			if( count( $gBitInstaller->mPackages[$package]['tables'] ) > count( $pDbTables['missing'][$package] )) {
 				// at least one table is missing
-				$ret[$package] = array(
+				$ret[$package] = [
 					'name'     => ucfirst( $gBitInstaller->mPackages[$package]['name'] ),
 					'required' => $gBitInstaller->mPackages[$package]['required'],
-				);
+				];
 				foreach( $pDbTables['missing'][$package] as $table ) {
-					$ret[$package]['tables'][$table] = array(
+					$ret[$package]['tables'][$table] = [
 						'name' => $table,
 						'sql'  => $gBitInstaller->mPackages[$package]['tables'][$table],
-					);
+					];
 				}
 			}
 		}
 	}
 	return $ret;
 }
-?>

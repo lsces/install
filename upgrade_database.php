@@ -9,7 +9,7 @@
  * required setup
  */
 $app = '';
-include_once( INSTALL_PKG_PATH.'install_database.php' );
+include_once( 'includes/install_database.php' );
 // update the MySQL settings in the db server array
 if( function_exists( 'mysql_connect' ) ) {
 	// check version of mysql server
@@ -22,4 +22,3 @@ if( function_exists( 'mysql_connect' ) ) {
 	}
 }
 $gBitSmarty->assign( 'include_template', INSTALL_PKG_PATH."templates/install_database".$app.".tpl" );
-?>

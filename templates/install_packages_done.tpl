@@ -33,7 +33,7 @@
 			</div>
 		{/if}
 
-		{if $packageList.install}
+		{if !empty($packageList.install)}
 			<h2>Packages that were installed</h2>
 			<ul>
 				{foreach from=$packageList.install item=package}
@@ -44,7 +44,7 @@
 			</ul>
 		{/if}
 
-		{if $packageList.uninstall}
+		{if !empty($packageList.uninstall)}
 			<div class="form-group">
 				{formlabel label="Packages that were uninstalled"}
 				{forminput}
@@ -59,7 +59,7 @@
 			</div>
 		{/if}
 
-		{if $packageList.reinstall}
+		{if !empty($packageList.reinstall)}
 			<div class="form-group">
 				{formlabel label="Packages that were reinstalled"}
 				{forminput}

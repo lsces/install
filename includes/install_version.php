@@ -1,4 +1,6 @@
 <?php
+
+use Bitweaver\KernelTools;
 /**
  * @version $Header$
  * @package install
@@ -17,10 +19,10 @@ if( version_compare( $gBitSystem->getBitVersion(), $gBitSystem->getVersion(), '=
 // updating to version 2.1.0-beta
 if( version_compare( '2.1.0-beta', $gBitSystem->getVersion(), '>' )) {
 	// get a list of all groups and their permissions
-	$listHash = array(
-		'only_root_groups' => TRUE,
-		'sort_mode' => !empty( $_REQUEST['sort_mode'] ) ? $_REQUEST['sort_mode'] : 'group_name_asc'
-	);
+	$listHash = [
+		'only_root_groups' => true,
+		'sort_mode'        => !empty( $_REQUEST['sort_mode'] ) ? $_REQUEST['sort_mode'] : 'group_name_asc'
+	];
 	$allGroups = $gBitUser->getAllGroups( $listHash );
 	$allPerms = $gBitUser->getGroupPermissions( $_REQUEST );
 
@@ -49,7 +51,7 @@ if( version_compare( '2.1.0-beta', $gBitSystem->getVersion(), '>' )) {
 if( !empty( $_REQUEST['update_version'] )) {
 	if( !empty( $upToDate ) || !empty( $_REQUEST['skip'] )) {
 		// if we're already up to date, we'll simply move on to the next page
-		bit_redirect( $_SERVER['SCRIPT_NAME']."?step=".++$step );
+		KernelTools::bit_redirect( $_SERVER['SCRIPT_NAME']."?step=".++$step );
 	} else {
 		// set the version of bitweaver in the database
 		if( $gBitSystem->storeVersion( NULL, $gBitSystem->getBitVersion() )) {
@@ -59,4 +61,3 @@ if( !empty( $_REQUEST['update_version'] )) {
 		}
 	}
 }
-?>

@@ -10,4 +10,3 @@ $app = '_done';
 if( !empty( $_SESSION['first_install'] ) ) {
 	$_SESSION = NULL;
 }
-?>

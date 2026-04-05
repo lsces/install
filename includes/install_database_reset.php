@@ -11,7 +11,7 @@
 
 // assign next step in installation process
 $gBitSmarty->assign( 'next_step',$step );
-//vd($_REQUEST);
+
 if( isset( $_REQUEST['continue_install'] ) ) {
 	header( 'Location: '.INSTALL_PKG_URL.'install.php?step='.( $step + 1 ) );
 } elseif( isset( $_REQUEST['reset_config_inc'] ) ) {
@@ -22,4 +22,3 @@ if( isset( $_REQUEST['continue_install'] ) ) {
 	}
 	header( 'Location: '.INSTALL_PKG_URL.'install.php' );
 }
-?>

@@ -15,7 +15,7 @@
 /**
  * required setup
  */
-require_once( 'includes/install_inc.php' );
+require_once 'includes/install_inc.php';
 
 // this variable will be appended to the template file called - useful for displaying messages after data input
 $app = '';
@@ -24,7 +24,7 @@ $app = '';
 if( !isset( $_REQUEST['step'] ) ) {
 	$_REQUEST['step'] = 0;
 } elseif( $_REQUEST['step'] == '0' ) {
-	$_SESSION['upgrade_r1'] = NULL;
+	$_SESSION['upgrade_r1'] = null;
 }
 $step = $_REQUEST['step'];
 
@@ -44,7 +44,7 @@ $install_file[$i]['name'] = 'Upgrade Complete';
 
 // currently i can't think of a better way to secure the upgrade pages
 // redirect to the installer if we aren't sent here by the installer and the upgrade session variable hasn't been set
-if( !isset( $_SESSION['upgrade'] ) || $_SESSION['upgrade'] != TRUE ||
+if( !isset( $_SESSION['upgrade'] ) || $_SESSION['upgrade'] != true ||
 	!isset( $_SERVER['HTTP_REFERER'] ) ||
 	isset( $_SERVER['HTTP_REFERER'] ) &&
 	( ( !strpos( $_SERVER['HTTP_REFERER'],'install/install.php' ) ) && ( !strpos( $_SERVER['HTTP_REFERER'],'install/upgrade.php' ) ) && ( !strpos( $_SERVER['HTTP_REFERER'],'install/migrate.php' ) ) )
@@ -56,7 +56,7 @@ if( !isset( $_SESSION['upgrade'] ) || $_SESSION['upgrade'] != TRUE ||
 // if it was selected as storage type, we set a session var
 // for use in update_packages.php
 if( isset( $_REQUEST['use_innodb'] ) ) {
-	$_SESSION['use_innodb'] = TRUE;
+	$_SESSION['use_innodb'] = true;
 }
 
 /**
@@ -71,5 +71,3 @@ $gBitSmarty->assign( 'section', 'Upgrade' );
 
 $gBitSmarty->assign( 'install_file', INSTALL_PKG_PATH."templates/upgrade_".$install_file[$step]['file'].$app.".tpl" );
 $gBitInstaller->in_display( $install_file[$step]['name'], INSTALL_PKG_PATH.'templates/install.tpl' );
-
-?>

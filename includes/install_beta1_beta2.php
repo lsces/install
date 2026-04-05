@@ -12,5 +12,4 @@
 /**
  * required setup
  */
-require_once( INSTALL_PKG_PATH.'install_packages.php' );
-?>
+require_once 'includes/install_packages.php';

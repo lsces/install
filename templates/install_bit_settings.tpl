@@ -35,19 +35,19 @@
 		{formlabel label="Home Page" for="bit_index"}
 		{forminput}
 			<select name="bit_index" id="bit_index" class="form-control">
-				<option value="my_home"{if $bit_index eq 'my_home'} selected="selected"{/if}>{tr}My home{/tr}</option>
+				<option value="my_home"{if $bit_index eq 'my_home'} selected="selected"{/if}>My home</option>
 				{if $smarty.const.ROLE_MODEL}
-					<option value="role_home"{if $bit_index eq 'role_home'} selected="selected"{/if}>{tr}Role home{/tr}</option>
+					<option value="role_home"{if $bit_index eq 'role_home'} selected="selected"{/if}>Role home</option>
 				{else}
-					<option value="group_home"{if $bit_index eq 'group_home'} selected="selected"{/if}>{tr}Group home{/tr}</option>
+					<option value="group_home"{if $bit_index eq 'group_home'} selected="selected"{/if}>Group home</option>
 				{/if}
 				{foreach key=name item=package from=$schema }
-					{if $package.homeable && $package.installed}
+					{if $package.homeable and $package.installed}
 						<option {if $package.name=='wiki'}selected="selected"{/if} value="{$package.name}">{$package.name}</option>
 					{/if}
 				{/foreach}
 				{if $gBitSystem->isFeatureActive( 'users_custom_home' )}
-					<option value="users_custom_home"{if $bit_index eq $gBitSystem->getConfig('site_url_index')} selected="selected"{/if}>{tr}Custom home{/tr}</option>
+					<option value="users_custom_home"{if $bit_index eq $gBitSystem->getConfig('site_url_index')} selected="selected"{/if}>Custom home</option>
 				{/if}
 			</select>
 			{formhelp note="Pick your site's homepage. This is where users will be redirected, when they access a link to your homepage.
@@ -63,9 +63,9 @@
 		{formlabel label="Site Style" for="site_style"}
 		{forminput}
 			<select name="site_style" id="site_style" class="form-control">
-				{foreach from=$stylesList item=s}
+				{* foreach from=$stylesList item=s}
 						<option value="{$s.style}" {if $s.style eq "basic"}selected="selected"{/if}>{$s.style}</option>
-				{/foreach}
+				{/foreach *}
 			</select>
 			{formhelp note="Pick the look and feel style you wish to use. Custom styles can be added to the config/themes/ directory and then selected in the themes administration panel."}
 		{/forminput}
@@ -96,7 +96,7 @@
 
 	<div class="form-group">
 		{forminput}
-			<input type="submit" class="btn btn-primary" name="bit_settings" value="{tr}Set Preferences{/tr}" />
+			<input type="submit" class="btn btn-primary" name="bit_settings" value="Set Preferences" />
 		{/forminput}
 	</div>
 {/form}

@@ -8,7 +8,7 @@
 		<p class="form-group">To upgrade CLYDE Beta 1 to CLYDE Beta 2, you need to upgrade your languages package.<br />We know we said we wouldn't make any rash schema changes, but we thought that since languages weren't working anyway, nobody could possibly loose data. We hope that this does not cause too great of a problem and we appologise for messing with the schema.<p>
 
 		{foreach from=$schema key=package item=item}
-			{if $item.tables || $item.defaults}
+			{if $item.tables or $item.defaults}
 				{if $package eq 'languages'}
 					<div class="form-group">
 						<div class="formlabel">

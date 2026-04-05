@@ -10,7 +10,7 @@
  */
 $gBitSmarty->assign( 'next_step',$step );
 
-require_once( "includes/get_databases_inc.php" );
+require_once 'includes/get_databases_inc.php';
 
 // next block checks if there is a config/kernel/config_inc.php and if we can connect through this.
 if( isset( $_REQUEST['submit_db_info'] )) {
@@ -29,7 +29,7 @@ if( isset( $_REQUEST['submit_db_info'] )) {
 		
 		$gBitDb = ADONewConnection( $gBitDbType );
 	
-		if( $gBitDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbName )) {
+		if( $gBitDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbType != 'pdo' ? $gBitDbName : NULL )) {
 			// display success page when done
 			$app = '_done';
 			$gBitSmarty->assign( 'next_step',$step + 1 );
@@ -75,4 +75,3 @@ if( isset( $_REQUEST['submit_db_info'] )) {
 		}
 	}
 }
-?>

@@ -9,7 +9,9 @@
  * Global flag to indicate we are installing
  * @ignore 
  */
-define( 'BIT_INSTALL', 'TRUE' );
+
+namespace Bitweaver;
+define( 'BIT_INSTALL', 'true' );
 	global $failedcommands;
 // keep some crappy notices from spewing
 $_SERVER['HTTP_HOST'] = 'shell';
@@ -18,17 +20,15 @@ $_SERVER['SERVER_SOFTWARE'] = 'command_line';
 /**
  * required setup
  */
-require_once( 'install_lib.php' );
-include("../kernel/includes/setup_inc.php");
+require_once 'includes/install_lib.php';
+include '../kernel/includes/setup_inc.php';
 
 if( count( $argv ) < 2) {
 	print "Please enter name of SQL file in db/ directory to process\n";
 } else {
 	// avoid errors in ADONewConnection() (wrong darabase driver etc...)
-	$gBitDb = &ADONewConnection($gBitDbType);
-	if( $gBitDb->Connect($gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbName) ) {
+	$gBitDb = ADONewConnection($gBitDbType);
+	if( $gBitDb->Connect($gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbType != 'pdo' ? $gBitDbName : NULL ) ) {
 		process_sql_file( $argv[1], $gBitDbType, BIT_DB_PREFIX );
 	}
 }
-
-?>

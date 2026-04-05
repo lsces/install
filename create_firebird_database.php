@@ -29,26 +29,20 @@
 
 //		if ($s_create_charset != 'NONE') {
 			// NONE is the default character set
-//			$sql .= ' DEFAULT CHARACTER SET '.$s_create_charset;
+			$sql .= ' DEFAULT CHARACTER SET UTF8';
 //		}
 
 		$sql .= ';';
 
 		$sql = str_replace("\r\n", "\n", $sql);
 		$sql .= "\n";
-		if( isset($_ENV["TMP"])) {
-			$tmp_name = $_ENV["TMP"].'/'.uniqid('').'.sql';
-		} else {
-			$tmp_name = '/tmp/'.uniqid('').'.sql';
-		}
+		$tmp_name = ( isset( $_SERVER["TMP"] ) ) ? $_SERVER["TMP"] . '/' . uniqid( '' ) . '.sql' : '/tmp/' . uniqid( '' ) . '.sql';
 
-		if ($fp = fopen ($tmp_name, 'a')) {
+		if ($fp = fopen ($tmp_name, 'a+')) {
 			fwrite($fp, $sql);
 			fclose($fp); 
 		}
 
-		$command =  sprintf('"%s" -i %s', $fbpath, $tmp_name );
+		$command =  sprintf('"%s" -u $user -p $pass -i %s', $fbpath, $tmp_name );
 		$result = exec($command);
 	}
-
-?>

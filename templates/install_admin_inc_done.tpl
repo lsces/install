@@ -10,7 +10,9 @@
 			<ul class="result">
 			{foreach from=$warning item=warn}
 				<li class="warning">
-					{booticon iname="fa-triangle-exclamation"} {$warn}
+					{booticon iname="icon-warning-sign"  ipackage="icons"  iexplain=warning}
+					&nbsp;
+					{$warn}
 				</li>
 			{/foreach}
 			</div>
@@ -55,7 +57,7 @@
 			{forminput}
 				{if $mail.warning}
 					{formfeedback error=$mail.warning}
-					{tr}You will have to consult your server adminstrator to fix this issue.{/tr}
+					You will have to consult your server adminstrator to fix this issue.
 				{else}
 					{formfeedback note="`$mail.success` Please check your inbox to confirm that the email was sent."}
 				{/if}

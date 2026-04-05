@@ -3,7 +3,11 @@
  * @version $Header$
  * @package install
  */
+namespace Bitweaver\Install;
 
+use Bitweaver\BitSystem;
+use Bitweaver\BitDb;
+use Bitweaver\KernelTools;
 /**
  * @package install
  */
@@ -15,7 +19,7 @@ class BitInstaller extends BitSystem {
 	 * @var array
 	 * @access public
 	 */
-	var $mPackageUpgrades = array();
+	public $mPackageUpgrades = [];
 
 	/**
 	 * mRequirements
@@ -23,13 +27,15 @@ class BitInstaller extends BitSystem {
 	 * @var array
 	 * @access public
 	 */
-	var $mRequirements = array();
+	public $mRequirements = [];
+
+	public $mPrefs;
 
 	/**
 	 * Initiolize BitInstaller
 	 * @access public
 	 */
-	function __construct() {
+	public function __construct() {
 		parent::__construct();
 		$this->getWebServerUid();
 	}
@@ -40,7 +46,7 @@ class BitInstaller extends BitSystem {
 	 * @access public
 	 * @return void
 	 */
-	function loadAllUpgradeFiles() {
+	public function loadAllUpgradeFiles() {
 		foreach( array_keys( $this->mPackages ) as $pkg ) {
 			$this->loadUpgradeFiles( $pkg );
 		}
@@ -50,9 +56,9 @@ class BitInstaller extends BitSystem {
 	 * Minimal login just for install in case users tables have been modified
 	 * 
 	 * @access public
-	 * @return void
+	 * @return boolean
 	 */
-	function login( $pLogin, $pPassword, $pChallenge=NULL, $pResponse=NULL ) {
+	public function login( $pLogin, $pPassword, $pChallenge=NULL, $pResponse=NULL ) {
 		global $gBitUser;
 
 		$isvalid = false;
@@ -80,11 +86,11 @@ class BitInstaller extends BitSystem {
 	/**
 	 * loadUpgradeFiles This will load all files in the dir <pckage>/admin/upgrades/<version>.php with a version greater than the one installed
 	 *
-	 * @param array $pPackage
+	 * @param string $pPackage
 	 * @access public
 	 * @return void
 	 */
-	function loadUpgradeFiles( $pPackage ) {
+	public function loadUpgradeFiles( $pPackage ) {
 		if( !empty( $pPackage )) {
 			$dir = constant( strtoupper( $pPackage )."_PKG_PATH" )."admin/upgrades/";
 			if( $this->isPackageActive( $pPackage ) && is_dir( $dir ) && $upDir = opendir( $dir )) {
@@ -113,7 +119,7 @@ class BitInstaller extends BitSystem {
 	 * @access public
 	 * @return void
 	 */
-	function registerPackageUpgrade( $pParams, $pUpgradeHash = array() ) {
+	public function registerPackageUpgrade( $pParams, $pUpgradeHash = array() ) {
 		if( $this->verifyPackageUpgrade( $pParams )) {
 			$this->registerPackageVersion( $pParams['package'], $pParams['version'] );
 			$this->mPackageUpgrades[$pParams['package']][$pParams['version']]            = $pParams;
@@ -134,9 +140,9 @@ class BitInstaller extends BitSystem {
 	 * @param string $pParams[description] Description of what the upgrade does
 	 * @param string $pParams[post_upgrade] Textual note of stuff that needs to be observed after the upgrade
 	 * @access public
-	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 * @return boolean TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
-	function verifyPackageUpgrade( &$pParams ) {
+	public function verifyPackageUpgrade( &$pParams ) {
 		if( empty( $pParams['package'] )) {
 			$this->mErrors['package'] = "Please provide a valid package name.";
 		} else {
@@ -155,8 +161,8 @@ class BitInstaller extends BitSystem {
 
 		// since this should only show up when devs are working, we'll simply display the output:
 		if( !empty( $this->mErrors )) {
-			vd( $this->mErrors );
-			bt();
+			\Bitweaver\vd( $this->mErrors );
+			\Bitweaver\bt();
 		}
 
 		return( count( $this->mErrors ) == 0 );
@@ -165,12 +171,12 @@ class BitInstaller extends BitSystem {
 	/**
 	 * registerUpgrade
 	 *
-	 * @param array $pPackage
+	 * @param string $pPackage
 	 * @param array $pUpgradeHash
 	 * @access public
-	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 * @return void
 	 */
-	function registerUpgrade( $pPackage, $pUpgradeHash ) {
+	public function registerUpgrade( $pPackage, $pUpgradeHash ) {
 		$pPackage = strtolower( $pPackage ); // lower case for uniformity
 		if( !empty( $pUpgradeHash ) ) {
 			$this->mUpgrades[$pPackage] = $pUpgradeHash;
@@ -185,7 +191,7 @@ class BitInstaller extends BitSystem {
 	 * @access public
 	 * @return void
 	 */
-	function in_display( $pPackage, $pTemplate ) {
+	public function in_display( $pPackage, $pTemplate ) {
 		header( 'Content-Type: text/html; charset=utf-8' );
 		if( ini_get( 'safe_mode' ) && ini_get( 'safe_mode_gid' )) {
 			umask( 0007 );
@@ -205,9 +211,9 @@ class BitInstaller extends BitSystem {
 	 * isInstalled
 	 *
 	 * @access public
-	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 * @return boolean TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
-	function isInstalled( $pPackage = 'kernel' ) {
+	public function isInstalled( $pPackage = 'kernel' ) {
 		return( !empty( $this->mPackages[$pPackage]['installed'] ));
 	}
 
@@ -217,11 +223,11 @@ class BitInstaller extends BitSystem {
 	 * @access public
 	 * @return void
 	 */
-	function getWebServerUid() {
+	public function getWebServerUid() {
 		global $wwwuser, $wwwgroup;
 		$wwwuser = $wwwgroup = '';
 
-		if( is_windows() ) {
+		if( KernelTools::is_windows() ) {
 			$wwwuser = 'SYSTEM';
 			$wwwgroup = 'SYSTEM';
 		}
@@ -246,9 +252,9 @@ class BitInstaller extends BitSystem {
 	 * getTablePrefix
 	 *
 	 * @access public
-	 * @return database adjusted table prefix
+	 * @return string database adjusted table prefix
 	 */
-	function getTablePrefix() {
+	public function getTablePrefix() {
 		global $gBitDbType;
 		$ret = BIT_DB_PREFIX;
 		// avoid errors in ADONewConnection() (wrong database driver etc...)
@@ -281,25 +287,26 @@ class BitInstaller extends BitSystem {
 	/**
 	 * upgradePackage
 	 *
-	 * @param array $pPackage
+	 * @param string $pPackage
 	 * @access public
-	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 * @return array|boolean TRUE on success, FALSE on failure - mErrors will contain reason for failure
 	 */
-	function upgradePackage( $pPackage ) {
+	public function upgradePackage( $pPackage ) {
 		if( !empty( $pPackage ) && !empty( $this->mUpgrades[$pPackage] )) {
-			return( $this->applyUpgrade( $pPackage, $this->mUpgrades[$pPackage] ));
+			return $this->applyUpgrade( $pPackage, $this->mUpgrades[$pPackage] );
 		}
+		return false;
 	}
 
 	/**
 	 * upgradePackageVersion
 	 *
-	 * @param array $pPackage
+	 * @param string $pPackage
 	 * @param array $pVersion
 	 * @access public
-	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 * @return array|null errors will contain reason for failure
 	 */
-	function upgradePackageVersions( $pPackage ) {
+	public function upgradePackageVersions( $pPackage ) {
 		if( !empty( $pPackage ) && !empty( $this->mPackageUpgrades[$pPackage] )) {
 			// make sure everything is in the right order
 			uksort( $this->mPackageUpgrades[$pPackage], 'upgrade_version_sort' );
@@ -320,34 +327,34 @@ class BitInstaller extends BitSystem {
 			}
 		}
 
-		return NULL;
+		return null;
 	}
 
 	/**
 	 * applyUpgrade
 	 *
-	 * @param array $pPackage
+	 * @param string $pPackage
 	 * @param array $pUpgradeHash
 	 * @access public
-	 * @return empty array on success, array with errors on failure
+	 * @return array empty array on success, array with errors on failure
 	 */
-	function applyUpgrade( $pPackage, $pUpgradeHash ) {
+	public function applyUpgrade( $pPackage, $pUpgradeHash ) {
 		global $gBitDb, $gBitDbType;
-		$ret = array();
+		$ret = [];
 
 		if( !empty( $pUpgradeHash ) && is_array( $pUpgradeHash )) {
 			// set table prefixes and handle special case of sequence prefixes
 			$schemaQuote = strrpos( BIT_DB_PREFIX, '`' );
 			$sequencePrefix = ( $schemaQuote ? substr( BIT_DB_PREFIX,  $schemaQuote + 1 ) : BIT_DB_PREFIX );
 			$tablePrefix = $this->getTablePrefix();
-			$dict = NewDataDictionary( $gBitDb->mDb );
-			$failedcommands = array();
+			$dict = NewDataDictionary( $gBitDb->mDb, 'firebird' );
+			$failedcommands = [];
 
 			for( $i = 0; $i < count( $pUpgradeHash ); $i++ ) {
 				if( !is_array( $pUpgradeHash[$i] ) ) {
-					vd( "[$pPackage][$i] is NOT an array" );
-					vd( $pUpgradeHash[$i] );
-					bt();
+					\Bitweaver\vd( "[$pPackage][$i] is NOT an array" );
+					\Bitweaver\vd( $pUpgradeHash[$i] );
+					\Bitweaver\bt();
 					die;
 				}
 
@@ -378,11 +385,9 @@ class BitInstaller extends BitSystem {
 											$completeTableName = $tablePrefix.$tableName;
 											$this->mDb->convertQuery( $completeTableName );
 											foreach( $alter[$tableName] as $from => $flds ) {
-												if( is_string( $flds )) {
-													$sql = $dict->ChangeTableSQL( $completeTableName, $flds );
-												} else {
-													$sql = $dict->ChangeTableSQL( $completeTableName, array( $flds ));
-												}
+												$sql = ( is_string( $flds ) ) 
+													? $dict->ChangeTableSQL( $completeTableName, $flds ) 
+													: $dict->ChangeTableSQL( $completeTableName, [ $flds ] );
 
 												if( $sql ) {
 													for( $sqlIdx = 0; $sqlIdx < count( $sql ); $sqlIdx++ ) {
@@ -565,12 +570,12 @@ class BitInstaller extends BitSystem {
 	/**
 	 * identifyBlobs
 	 *
-	 * @param array $result
+	 * @param object $result
 	 * @access public
-	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 * @return array
 	 */
-	function identifyBlobs( $result ) {
-		$blobs = array();
+	public function identifyBlobs( $result ) {
+		$blobs = [];
 		//echo "FieldCount: ".$result->FieldCount()."\n";
 		for( $i = 0; $i < $result->FieldCount(); $i++ ) {
 			$field = $result->FetchField($i);
@@ -585,41 +590,16 @@ class BitInstaller extends BitSystem {
 	/**
 	 * convertBlobs enumerate blob fields and encoded
 	 *
-	 * @param string $gDb
+	 * @param BitDb $gDb
 	 * @param array $res
 	 * @param array $blobs
 	 * @access public
-	 * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+	 * @return void
 	 */
-	function convertBlobs( $gDb, &$res, $blobs ) {
+	public function convertBlobs( $gDb, &$res, $blobs ) {
 		foreach( $blobs as $blob ) {
 			$res[$blob] = $gDb->dbByteEncode( $res[$blob] );
 		}
-	}
-
-	/**
-	 * hasAdminBlock
-	 *
-	 * @access public
-	 * @return TRUE on success, FALSE on failure
-	 * @deprecated i think this isn't used any more
-	 */
-	function hasAdminBlock() {
-		deprecated( "i think this isn't used anymore." );
-		global $gBitUser;
-		// Let's find out if we are have admin perm or a root user
-		$ret = TRUE;
-		if( empty( $gBitUser ) || $gBitUser->isAdmin() ) {
-			$ret = FALSE;
-		} else {
-			// let's try to load up user_id - if successful, we know we have one.
-			$rootUser = new BitPermUser( 1 );
-			$rootUser->load();
-			if( !$rootUser->isValid() ) {
-				$ret = FALSE;
-			}
-		}
-		return $ret;
 	}
 }
 
@@ -627,7 +607,7 @@ class BitInstaller extends BitSystem {
  * check_session_save_path
  *
  * @access public
- * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+ * @return void
  */
 function check_session_save_path() {
 	global $errors;
@@ -636,14 +616,14 @@ function check_session_save_path() {
 
 		if( !is_dir( $save_path )) {
 			$errors .= "The directory '$save_path' does not exist or PHP is not allowed to access it (check session.save_path or open_basedir entries in php.ini).\n";
-		} elseif( !bw_is_writeable( $save_path )) {
+		} elseif( !KernelTools::bw_is_writeable( $save_path )) {
 			$errors .= "The directory '$save_path' is not writeable.\n";
 		}
 
 		if( $errors ) {
-			$save_path = tempdir();
+			$save_path = KernelTools::get_temp_dir();
 
-			if (is_dir($save_path) && bw_is_writeable($save_path)) {
+			if (is_dir($save_path) && KernelTools::bw_is_writeable($save_path)) {
 				ini_set('session.save_path', $save_path);
 
 				$errors = '';
@@ -661,10 +641,10 @@ function check_session_save_path() {
  * @param string $gBitDbPassword
  * @param string $gBitDbName
  * @access public
- * @return TRUE on success, FALSE on failure - mErrors will contain reason for failure
+ * @return \ADOConnection
  */
 function makeConnection( $gBitDbType, $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbName ) {
-	$gDb = &ADONewConnection( $gBitDbType );
+	$gDb = ADONewConnection( $gBitDbType );
 	if( !$gDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbName )) {
 		echo $gDb->ErrorMsg()."\n";
 		die;
@@ -694,6 +674,7 @@ function upgrade_package_sort( $a, $b ) {
 	} elseif( !$aa['required'] && $bb['required'] ) {
 		return 1;
 	}
+	return 0;
 }
 
 /**
@@ -725,5 +706,3 @@ function upgrade_query_sort( $a, $b ) {
 		return 0;
 	}
 }
-
-?>

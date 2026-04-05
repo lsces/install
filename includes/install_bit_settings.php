@@ -26,26 +26,23 @@ function simple_set_value( $package, $feature ) {
 }
 
 // pass all package data to template
-$gBitSmarty->assignByRef( 'schema', $gBitInstaller->mPackages );
+$gBitSmarty->assign( 'schema', $gBitInstaller->mPackages );
 
 // settings that aren't just toggles
-$formInstallValues = array(
+$formInstallValues = [
 	'bit_index'          => 'kernel',
 	'kernel_server_name' => 'kernel',
 	'site_title'         => 'kernel',
 	'site_slogan'        => 'kernel',
 	'bitlanguage'        => 'languages',
-);
+];
 
-$processors = array();
+$processors = [];
 if( extension_loaded( 'gd' ) ) {
 	$processors['gd'] = '<strong>GD Library</strong> [php-gd]';
 }
 if( extension_loaded( 'imagick' ) ) {
 	$processors['imagick'] = '<strong>Image Magick</strong> [php-imagick] - recommended';
-}
-if( extension_loaded( 'magickwand' ) ) {
-	$processors['magickwand'] = '<strong>MagickWand</strong> [php-magickwand] - highly recommended';
 }
 if( count( $processors ) > 0 ) {
 	$gBitSmarty->assign( 'processors', $processors );
@@ -53,14 +50,14 @@ if( count( $processors ) > 0 ) {
 }
 
 // list of available site styles
-$subDirs = array( 'style_info', 'alternate' );
-$stylesList = $gBitThemes->getStylesList( NULL, NULL, $subDirs );
-$gBitSmarty->assignByRef( "stylesList", $stylesList );
+$subDirs = [ 'style_info', 'alternate' ];
+$stylesList = $gBitThemes->getStylesList( '', TRUE, $subDirs );
+$gBitSmarty->assign( "stylesList", $stylesList );
 
 // get list of available languages
-$languages = array();
+$languages = [];
 $languages = $gBitLanguage->listLanguages();
-$gBitSmarty->assignByRef("languages",$languages );
+$gBitSmarty->assign("languages",$languages );
 
 // process form
 if( isset( $_REQUEST['bit_settings'] ) ) {
@@ -92,7 +89,7 @@ if( isset( $_REQUEST['bit_settings'] ) ) {
 
 // get list of foreign packages that are ready to be installed
 // @TODO this isn't working yet, since the info stuff isn't read from schema_inc.php on this page
-$foreign_packages = array();
+$foreign_packages = [];
 foreach( $gBitSystem->mPackages as $package ) {
 	if( isset( $package['info']['install'] ) ) {
 		$foreign_packages[] = $package;
@@ -102,4 +99,3 @@ if ( defined( 'ROLE_MODEL' ) ) {
 	$gBitSmarty->assign( "role_model", TRUE );
 }
 $gBitSmarty->assign( "foreign_packages", $foreign_packages );
-?>

@@ -29,7 +29,7 @@
 			</li>
 			<li>
 				<strong>bitweaver Configuration</strong>
-				<br />We urge you to look at your <kbd>config/kernel/config_inc.php</kbd> file. It has various useful settings for sites in production. One of these is the <strong>IS_LIVE</strong> parameter. Setting this to <strong>TRUE</strong> will prevent any visible bug reports and will therefore not display sensitive information to the user.
+				<br />We urge you to look at your <kbd>config/kernel/config_inc.php</kbd> file. It has various useful settings for sites in production. One of these is the <strong>IS_LIVE</strong> parameter. Setting this to <strong>true</strong> will prevent any visible bug reports and will therefore not display sensitive information to the user.
 			</li>
 		</ul>
 	</div>

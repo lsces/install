@@ -27,10 +27,10 @@
 
 
 			<table class="table data">
-				<caption>{tr}Available Permissions{/tr}</caption>
+				<caption>Available Permissions</caption>
 				{capture assign=theader}
 					<tr>
-						<th style="width:30%;">{tr}Permission{/tr}</th>
+						<th style="width:30%;">Permission</th>
 						{foreach from=$allGroups item=group name=groups}
 							<th>
 								<abbr title="{$group.group_name}">{if $smarty.foreach.groups.total > 8}{$group.group_id}{else}{$group.group_name}{/if}</abbr>

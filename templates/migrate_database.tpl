@@ -73,7 +73,7 @@
 					{formlabel label="Source database name" for="name_src"}
 					{forminput}
 						<input type="text" class="form-control" name="name_src" id="name_src" value="{$name_src}" />
-						{ if ( $fbpath ) }
+						{if ( $fbpath )}
 							{formhelp note="The name of the database where Bitweaver will create tables. You can
 								create a Firebird alias for the Bitweaver database in aliases.conf and then use that
 								aliase as the database name, or provide a full path and file name to create
@@ -88,7 +88,7 @@
 				</div>
 
 				<div class="form-group">
-				{ if ( $fbpath ) }
+				{if ( $fbpath )}
 					{formhelp note="<strong>Do not use prefix with Firebird, as the field and table names are already up to 30 characters.</strong>"}
 				{/if}
 					{formlabel label="Source Database Prefix" for="prefix_src"}
@@ -102,7 +102,7 @@
 					{/forminput}
 				</div>
 
-				{ if ( $fbpath ) }
+				{if ( $fbpath )}
 				<div class="form-group">
 					{formlabel label="Firebird Installation Path" for="fbpath"}
 					{forminput}
@@ -184,7 +184,7 @@
 					{formlabel label="Destination database name" for="name_dst"}
 					{forminput}
 						<input type="text" class="form-control" name="name_dst" id="name_dst" value="{$gBitDbName}" />
-						{ if ( $fbpath ) }
+						{if ( $fbpath )}
 							{formhelp note="The name of the database where Bitweaver will create tables. You can
 								create a Firebird alias for the Bitweaver database in aliases.conf and then use that
 								aliase as the database name, or provide a full path and file name to create
@@ -199,7 +199,7 @@
 				</div>
 
 				<div class="form-group">
-				{ if ( $fbpath ) }
+				{if ( $fbpath )}
 					{formhelp note="<strong>Do not use prefix with Firebird, as the field and table names are already up to 30 characters.</strong>"}
 				{/if}
 					{formlabel label="Destination Database Prefix" for="prefix_dst"}
@@ -213,7 +213,7 @@
 					{/forminput}
 				</div>
 
-				{ if ( $fbpath ) }
+				{if ( $fbpath )}
 				<div class="form-group">
 					{formlabel label="Firebird installation path" for="fbpath"}
 					{forminput}

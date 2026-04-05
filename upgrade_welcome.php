@@ -17,4 +17,3 @@ if( ini_get( "max_execution_time" ) != 86400 ) {
 
 // assign next step in installation process
 $gBitSmarty->assign( 'next_step', $step + 1 );
-?>
