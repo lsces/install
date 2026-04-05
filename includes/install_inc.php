@@ -177,4 +177,3 @@ if(
 
 // this is needed because some pages display some additional information during a first install
 $gBitSmarty->assign( 'first_install', $_SESSION['first_install'] );
-?>
