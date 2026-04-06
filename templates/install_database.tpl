@@ -55,11 +55,11 @@
 				{formhelp note="The type of database you intend to use."}
 				{if $mysqlWarning}
 					<p class="alert alert-block">
-						Versions of MySQL less than 4.1 are not supported by some packages due to the <a href="http://dev.mysql.com/doc/refman/4.1/en/subqueries.html">lack of subquery support</a>. Notable among these are the <a href="http://www.bitweaver.org/wiki/BoardsPackage">Boards</a> and <a href="http://www.bitweaver.org/wiki/MessagesPackage">Messages</a> packages. Other packages may also have issues. It is recommended that you use MySQL version 4.1 or higher for the best experience with Bitweaver. It <em>may</em> be possible to use a lower versions of MySQL if you do not install these packages.
+						Versions of MySQL less than 4.1 are not supported by some packages due to the <a href="http://dev.mysql.com/doc/refman/4.1/en/subqueries.html">lack of subquery support</a>. Notable among these are the <a href="https://www.bitweaver.org/wiki/BoardsPackage">Boards</a> and <a href="https://www.bitweaver.org/wiki/MessagesPackage">Messages</a> packages. Other packages may also have issues. It is recommended that you use MySQL version 4.1 or higher for the best experience with Bitweaver. It <em>may</em> be possible to use a lower versions of MySQL if you do not install these packages.
 					</p>
 				{/if}
 			{else}
-				<p class="alert alert-block">You currently have no database installed that works here. If you feel this is wrong, please contact the <a class="external" href="http://www.bitweaver.org/">Bitweaver team</a>.</p>
+				<p class="alert alert-block">You currently have no database installed that works here. If you feel this is wrong, please contact the <a class="external" href="https://www.bitweaver.org/">Bitweaver team</a>.</p>
 			{/if}
 			<p class="alert alert-block">If the database you wish to use is not listed above, the version of PHP on this server does not have support for that database installed or compiled in.</p>
 		{/forminput}

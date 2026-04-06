@@ -11,7 +11,7 @@
 		</div>
 
 		<p>Please go back one step (using the link to your right, rather than the back button on your browser) and enter the administrator data again. If this is the second time you see this screen, please confirm that PHP can write sessions and that any firewall/anti-virus software is turned off during the installation process.</p>
-		<p>If you just can't figure out what the hell is going on, please contact the Bitweaver team via <a href="http://www.bitweaver.org/wiki/Live+Support">IRC</a> if possible or post to the forums on <a href="http://www.bitweaver.org">bitweaver.org</a>.</p>
+		<p>If you just can't figure out what the hell is going on, please contact the Bitweaver team via <a href="https://www.bitweaver.org/wiki/Live+Support">IRC</a> if possible or post to the forums on <a href="https://www.bitweaver.org">bitweaver.org</a>.</p>
 {else}
 	{formfeedback warning=$warning}
 	{form id="installpackagesform"}

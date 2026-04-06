@@ -4,13 +4,13 @@
 	<p class="alert alert-success">
 		Your system is ready for use now.
 	</p>
-	<p>Bitweaver offers helpnotes throughout. Should you require more help, you can always contact Bitweaver's developers by any of the means mentioned below. To find out more about existing packages and how to install them, visit <a class="external" href="http://www.bitweaver.org/wiki/index.php?page=bitweaverFeatures">Bitweaver Features</a>.</p>
+	<p>Bitweaver offers helpnotes throughout. Should you require more help, you can always contact Bitweaver's developers by any of the means mentioned below. To find out more about existing packages and how to install them, visit <a class="external" href="https://www.bitweaver.org/wiki/index.php?page=bitweaverFeatures">Bitweaver Features</a>.</p>
 	<p>To get in contact with Bitweaver developers:</p>
 	<ul>
-		<li><a class="external" href="http://www.bitweaver.org/wiki/Live+Support">chat:</a> #bitweaver on freenode.net</li>
+		<li><a class="external" href="https://www.bitweaver.org/wiki/Live+Support">chat:</a> #bitweaver on freenode.net</li>
 		<li><a class="external" href="http://sourceforge.net/mail/?group_id=141358">mailing list at sourceforge.net</a></li>
-		<li><a class="external" href="http://www.bitweaver.org/forums/viewforum.php?f=5">bitweaver.org Forums</a></li>
-		<li><a class="external" href="http://www.bitweaver.org/">bitweaver.org</a> contains all available documentation</li>
+		<li><a class="external" href="https://www.bitweaver.org/forums/viewforum.php?f=5">bitweaver.org Forums</a></li>
+		<li><a class="external" href="https://www.bitweaver.org/">bitweaver.org</a> contains all available documentation</li>
 		<li>submit bugs to Bitweaver's <a class="external" href="http://sourceforge.net/tracker/?group_id=141358&atid=749176">bug tracker at sourceforge.net</a></li>
 	</ul>
 	<p>If you feel like contributing to Bitweaver, contact us! Bitweaver is free and Open Source to all. Translators, testers, admins, release managers, developers, programmers, designers, <em>we want you!</em> :)</p>
@@ -36,7 +36,7 @@
 	<div class="alert alert-info">
 		<strong>Performance</strong>
 		<ul>
-			<li>For production sites, we recommend you visit our <a class="external" href="http://www.bitweaver.org/wiki/Bitweaver+Performance">Bitweaver Performance</a> page on how to optimise your Bitweaver install.</li>
+			<li>For production sites, we recommend you visit our <a class="external" href="https://www.bitweaver.org/wiki/Bitweaver+Performance">Bitweaver Performance</a> page on how to optimise your Bitweaver install.</li>
 			<li>Please also have a look at your <kbd>config/kernel/config_inc.php</kbd> file. It contains various settings that cannot be set elsewhere and which might be of interest to you.</li>
 		</ul>
 	</div>

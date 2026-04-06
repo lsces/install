@@ -87,8 +87,7 @@ function check_settings() {
 	$php_ext = [
 		'zlib'       => '<a class="external" href="http://www.zlib.net/">The zlib compression libraries</a> are used to pack and unpack compressed files such as .zip files.',
 		'gd'         => '<a class="external" href="http://www.boutell.com/gd/">GD Libraries</a> are used to manipulate images. Bitweaver uses these libraries to create thumbnails and convert images from one format to another. If you are running Red Hat or Fedora Core, you can try: <kbd>yum install php-gd</kbd>. The GD libaries are quite limited and <em>don\'t support</em> a number of image formats including <em>.bmp</em>. If you are planning on uploading and using a lot of images, we recommend you use one of the other image processors.',
-		'imagick'    => 'ImageMagick supports a multitude of different image and video formats and <em>can be used instead of the GD Libraries</em>. Using these libraries will allow you to upload most image formats without any difficulties. For installation help, please view <a class="external" href="http://www.bitweaver.org/wiki/ImageMagick">ImageMagick and MagickWand installation instructions</a> or visit the <a class="external" href="http://www.imagemagick.org">ImageMagick homepage</a>.',
-		'magickwand' => 'MagickWand is a newer PHP extension for ImageMagick. For installation help, please view Bitweaver\'s: <a class="external" href="http://www.bitweaver.org/wiki/ImageMagick">ImageMagick and MagickWand installation instructions</a> or visit the <a class="external" href="http://www.imagemagick.org">ImageMagick homepage</a>.',
+		'imagick'    => 'ImageMagick supports a multitude of different image and video formats and <em>can be used instead of the GD Libraries</em>. Using these libraries will allow you to upload most image formats without any difficulties. For installation help, please view <a class="external" href="https://www.bitweaver.org/wiki/ImageMagick">ImageMagick and MagickWand installation instructions</a> or visit the <a class="external" href="http://www.imagemagick.org">ImageMagick homepage</a>.',
 //		'ffmpeg'       => '<a class="external" href="http://ffmpeg-php.sourceforge.net/">ffmpeg-php</a> is an extension that will allow you to better process uploaded videos. This extension requires ffmpeg to be installed on your server as well.',
 	];
 	foreach( $php_ext as $ext => $note ) {
@@ -123,7 +122,7 @@ function check_settings() {
 			'command'     => 'tar -xvf',
 			'dest_params' => '-C',
 			'testfile'    => 'test.tar',
-			'note'        => '<strong>Tarball</strong> is a common archiving format on Linux and <a class="external" href="http://www.gnu.org/software/tar/">tar</a> is used to extract .tar files. For windows use <a class="external" href="http://gnuwin32.sourceforge.net/downlinks/libarchive.php">bsdtar</a> from gnuwin32 ( See <a class="external" href="http://www.bitweaver.org/wiki/Windows+installation+notes">Windows notes for installation help</a> ).',
+			'note'        => '<strong>Tarball</strong> is a common archiving format on Linux and <a class="external" href="http://www.gnu.org/software/tar/">tar</a> is used to extract .tar files. For windows use <a class="external" href="http://gnuwin32.sourceforge.net/downlinks/libarchive.php">bsdtar</a> from gnuwin32 ( See <a class="external" href="https://www.bitweaver.org/wiki/Windows+installation+notes">Windows notes for installation help</a> ).',
 		],
 		'bzip2'    => [
 			'command'     => 'tar -jvxf',
@@ -224,7 +223,7 @@ function check_settings() {
 		],
 //		'HTMLPurifier'   => [
 //			'path'            => 'HTMLPurifier.php',
-//			'note'            => 'HTMLPurifier is an advanced system for defending against Cross Site Scripting (XSS) attacks and ensuring that all code on your site is standards compliant. It is highly recommended if you are going to allow HTML submission to your site. It is not required if you are only going to allow the input of a Wiki format like Tikiwiki or BBcode. You also need to enable it in the Liberty plugins administration after installation. See <a class="external" href="http://www.bitweaver.org/wiki/HTMLPurifier">http://www.bitweaver.org/wiki/HTMLPurifier</a> and <a class = "external" href = "http: // htmlpurifier.org">http://htmlpurifier.org</a> for more information.',
+//			'note'            => 'HTMLPurifier is an advanced system for defending against Cross Site Scripting (XSS) attacks and ensuring that all code on your site is standards compliant. It is highly recommended if you are going to allow HTML submission to your site. It is not required if you are only going to allow the input of a Wiki format like Tikiwiki or BBcode. You also need to enable it in the Liberty plugins administration after installation. See <a class="external" href="https://www.bitweaver.org/wiki/HTMLPurifier">https://www.bitweaver.org/wiki/HTMLPurifier</a> and <a class = "external" href = "http: // htmlpurifier.org">http://htmlpurifier.org</a> for more information.',
 //			'install_command' => 'pear channel-discover htmlpurifier.org;<br />pear install hp/HTMLPurifier;',
 //		],
 		'HTTP_Download'  => [

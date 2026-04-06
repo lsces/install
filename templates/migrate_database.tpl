@@ -34,7 +34,7 @@
 						{if $dbservers}
 							{html_options name='db_src' options=$dbservers id=db_src selected=$db_src}
 						{else}
-							{formfeedback warning='You currently have no database installed that works here. If you feel this is wrong, please contact the <a class="external" href="http://www.bitweaver.org/">Bitweaver Team</a>.'}
+							{formfeedback warning='You currently have no database installed that works here. If you feel this is wrong, please contact the <a class="external" href="https://www.bitweaver.org/">Bitweaver Team</a>.'}
 						{/if}
 						{formhelp note="The type of database you intend to use."}
 						{formfeedback warning="If the database you wish to use is not listed above, the version of PHP on this server does not have support for that database installed or compiled in."}
@@ -145,7 +145,7 @@
 						{if $dbservers}
 							{html_options name='db_dst' options=$dbservers id=db_dst selected=$gBitDbType}
 						{else}
-							{formfeedback warning='You currently have no Database installed that works here. If you feel this is wrong, please contact the <a class="external" href="http://www.bitweaver.org/">Bitweaver Team</a>.'}
+							{formfeedback warning='You currently have no Database installed that works here. If you feel this is wrong, please contact the <a class="external" href="https://www.bitweaver.org/">Bitweaver Team</a>.'}
 						{/if}
 						{formhelp note="The type of database you intend to use."}
 						{formfeedback warning="If the database you wish to use is not listed above, the version of PHP on this server does not have support for that database installed or compiled in."}

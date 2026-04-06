@@ -47,7 +47,7 @@
 		<h2>Important</h2>
 		<p class="danger">
 			Since you are upgrading from Bitweaver version 1 to version 2, please visit the
-			<strong><a class="external" href="http://www.bitweaver.org/wiki/bitweaver+R1+to+R2+Upgrade">Upgrade documentation page</a></strong>.
+			<strong><a class="external" href="https://www.bitweaver.org/wiki/bitweaver+R1+to+R2+Upgrade">Upgrade documentation page</a></strong>.
 			It contains <strong>crucial information</strong> about the
 			changes that have occurred and how to fix certain upgrade issues
 			that can not be dealt with by the installer. We can not stress

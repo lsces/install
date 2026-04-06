@@ -28,7 +28,7 @@
 
 
 <div class="center">
-	<a href="http://www.bitweaver.org/">
+	<a href="https://www.bitweaver.org/">
 		<img src="{$smarty.const.INSTALL_PKG_URL}css/images/bitweaver_logo-trans.png" width="121" height="121" alt="bitweaver logo" title="Click here to visit the upgrade instructions" />
 	</a>
 </div>

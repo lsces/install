@@ -40,7 +40,7 @@
 
 				<nav class="pull-right width60p" style="padding:10px 20px 0 0;">
 					<div class="pull-right">
-						<a href="http://www.bitweaver.org/wiki/index.php?page={$section|default:"Install"}bitweaverDoc"><i class="icon-question-sign"></i> Help</a>
+						<a href="https://www.bitweaver.org/wiki/index.php?page={$section|default:"Install"}bitweaverDoc"><i class="icon-question-sign"></i> Help</a>
 					</div>
 
 					<div class="pull-right width50p" style="padding:0 10px;">

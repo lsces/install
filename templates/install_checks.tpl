@@ -148,7 +148,7 @@
 							href="http://pear.php.net/manual/en/installation.shared.php">a
 							shared environment</a> (requires ssh access or ftp access),</li>
 					<li>or download a pre-packed set of <a class="external"
-							href="http://www.bitweaver.org/downloads/file/11619">Bitweaver
+							href="https://www.bitweaver.org/downloads/file/11619">Bitweaver
 							PEAR extensions</a> and extract this to<br />
 						<kbd>{$smarty.const.UTIL_PKG_INCLUDE_PATH}pear/</kbd></li>
 				</ul>
