@@ -101,12 +101,13 @@ function check_settings() {
 		$extensions[$ext]['note'] .= "available.<br />$note";
 	}
 
-	// disable one of the imagick / magickwand warnings
+/*	// disable one of the imagick / magickwand warnings
 	if( $extensions['magickwand']['passed'] == true && $extensions['imagick']['passed'] == false ) {
 		unset( $extensions['imagick'] );
 	} elseif( $extensions['imagick']['passed'] == true && $extensions['magickwand']['passed'] == false ) {
 		unset( $extensions['magickwand'] );
 	}
+*/
 
 	// make sure we show the worning flag if there is a need for it
 	foreach( $extensions as $info ) {
