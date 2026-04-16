@@ -485,13 +485,14 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 			}
 
 			// Set the default format to get quicktags and content storing working
-			$plugin_file = LIBERTY_PKG_PATH.'plugins/format.tikiwiki.php';
+			// Switched from TIKIWIKI to BITHTML for more modern default
+			$plugin_file = LIBERTY_PKG_PATH.'plugins/format.bithtml.php';
 			if( is_readable( $plugin_file ) ) {
 				require_once( $plugin_file );
 				// manually set the config format to avoid problems
-				$gBitSystem->storeConfig( 'liberty_plugin_file_'.PLUGIN_GUID_TIKIWIKI, $plugin_file, LIBERTY_PKG_NAME );
-				$gBitSystem->storeConfig( 'liberty_plugin_status_'.PLUGIN_GUID_TIKIWIKI, 'y', LIBERTY_PKG_NAME );
-				$gBitSystem->storeConfig( 'default_format', PLUGIN_GUID_TIKIWIKI, LIBERTY_PKG_NAME );
+				$gBitSystem->storeConfig( 'liberty_plugin_file_'.PLUGIN_GUID_BITHTML, $plugin_file, LIBERTY_PKG_NAME );
+				$gBitSystem->storeConfig( 'liberty_plugin_status_'.PLUGIN_GUID_BITHTML, 'y', LIBERTY_PKG_NAME );
+				$gBitSystem->storeConfig( 'default_format', PLUGIN_GUID_BITHTML, LIBERTY_PKG_NAME );
 			}
 
 			// Installing users has some special things to take care of here and needs a separate check.
