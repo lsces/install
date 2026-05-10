@@ -154,7 +154,7 @@ global $gBitUser;
 
 if( !empty( $_POST['signin'] ) ) {
 	$gBitInstaller->login( $_REQUEST['user'], $_REQUEST['pass'] );	
-} elseif( is_object( $gBitUser ) && !empty( $_COOKIE[$gBitUser->getSiteCookieName()] ) && ( $gBitUser->mUserId = $gBitUser->getUserIdFromCookieHash( $_COOKIE[$gBitUser->getSiteCookieName()] ))) {
+} elseif( is_object( $gBitUser ) && !empty( $_COOKIE[$gBitUser->getSiteCookieName()] ) && ( $gBitUser->mUserId = $gBitUser->getUserIdFromCookie( $_COOKIE[$gBitUser->getSiteCookieName()] ))) {
 	$userInfo = $gBitUser->getUserInfo( [ 'user_id' => $gBitUser->mUserId ] );
 
 	if( $userInfo['user_id'] != ANONYMOUS_USER_ID ) {
