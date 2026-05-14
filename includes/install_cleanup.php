@@ -12,18 +12,14 @@ $schema = $gBitInstaller->mPackages;
 ksort( $schema );
 $gBitSmarty->assign( 'schema', $schema );
 
-
-
 // ===================== Post install table check =====================
 // $dbTables is the output of BitSystem::verifyInstalledPackages() in
 // install_inc.php and contains all tables that are not present in the database
 // - even tables of packages that are not installed
 $dbIntegrity = install_check_database_integrity( $dbTables );
 
-
-
 // ===================== Permissions =====================
-// check all permissions, compare them to each other and see if there are old 
+// check all permissions, compare them to each other and see if there are old
 // permissions and ones that need to be inserted
 $query = "SELECT * FROM `".BIT_DB_PREFIX."users_permissions` ORDER BY `package` ASC";
 $result = $gBitInstaller->mDb->query( $query );
@@ -106,7 +102,7 @@ if (!empty( $_REQUEST['create_tables'] ) && !empty( $dbIntegrity )) {
 		}
 
 		// If we use MySql check which storage engine to use
-		$build = isset( $_SESSION['use_innodb'] ) 
+		$build = isset( $_SESSION['use_innodb'] )
 			? ( ( $_SESSION['use_innodb'] == true ) ? [ 'NEW', 'MYSQL' => 'ENGINE=INNODB' ] : [ 'NEW', 'MYSQL' => 'ENGINE=MYISAM' ] ) : 'NEW';
 
 		$tablePrefix = $gBitInstaller->getTablePrefix();
@@ -188,8 +184,6 @@ $dbIntegrity = install_check_database_integrity( $dbTables );
 $gBitSmarty->assign( 'dbIntegrity', $dbIntegrity );
 
 // $gBitSmarty->assign( 'serviceList', $serviceList );
-
-
 
 /**
  * function - install_check_database_integrity

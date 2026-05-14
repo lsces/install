@@ -40,7 +40,7 @@
 
 		if ($fp = fopen ($tmp_name, 'a+')) {
 			fwrite($fp, $sql);
-			fclose($fp); 
+			fclose($fp);
 		}
 
 		$command =  sprintf('"%s" -u $user -p $pass -i %s', $fbpath, $tmp_name );

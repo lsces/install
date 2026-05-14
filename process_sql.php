@@ -11,6 +11,7 @@
  */
 
 namespace Bitweaver;
+
 define( 'BIT_INSTALL', 'true' );
 	global $failedcommands;
 // keep some crappy notices from spewing

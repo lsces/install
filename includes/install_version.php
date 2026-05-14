@@ -21,7 +21,7 @@ if( version_compare( '2.1.0-beta', $gBitSystem->getVersion(), '>' )) {
 	// get a list of all groups and their permissions
 	$listHash = [
 		'only_root_groups' => true,
-		'sort_mode'        => !empty( $_REQUEST['sort_mode'] ) ? $_REQUEST['sort_mode'] : 'group_name_asc'
+		'sort_mode'        => !empty( $_REQUEST['sort_mode'] ) ? $_REQUEST['sort_mode'] : 'group_name_asc',
 	];
 	$allGroups = $gBitUser->getAllGroups( $listHash );
 	$allPerms = $gBitUser->getGroupPermissions( $_REQUEST );

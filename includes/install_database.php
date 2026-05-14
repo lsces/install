@@ -18,17 +18,17 @@ if( isset( $_REQUEST['submit_db_info'] )) {
 		// avoid database change messages
 		ini_set( 'sybct.min_server_severity', '11' );
 	}
-	
+
 	// for Oracle force database name to use one from tnsnames
 	// this way we avoid further StartTrans errors that was often reported,
 	if( $gBitDbType == 'oci8po' && empty( $gBitDbName ) ) {
 		$gBitSmarty->assign( 'error', TRUE );
 		$gBitSmarty->assign( 'errorMsg', "Please fill Database Name field. If you don't know it and you're using Express Edition it's probably 'XE'. Otherwise check your \"tnsnames.ora\" file to get appropriate one." );
-		$error = TRUE; 
+		$error = TRUE;
 	} else {
-		
+
 		$gBitDb = ADONewConnection( $gBitDbType );
-	
+
 		if( $gBitDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbType != 'pdo' ? $gBitDbName : NULL )) {
 			// display success page when done
 			$app = '_done';
@@ -44,7 +44,7 @@ if( isset( $_REQUEST['submit_db_info'] )) {
 			} else {
 				$_SESSION['first_install'] = FALSE;
 			}
-	
+
 			if( $_SESSION['first_install'] == TRUE ) {
 				// For MySql only, on first install check if server support
 				// InnoDB and set a smarty var for template to offer using
@@ -62,7 +62,7 @@ if( isset( $_REQUEST['submit_db_info'] )) {
 									break 2;
 								}
 						}
-	
+
 						$rs->MoveNext();
 					}
 					$rs->Close();

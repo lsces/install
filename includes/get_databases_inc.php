@@ -44,7 +44,7 @@ if( function_exists( 'fbird_connect' ) ) {
 		$gBitDbUser = 'SYSDBA';
 		$gBitDbPassword = 'masterkey';
 	}
-} 
+}
 if( extension_loaded( 'pdo_firebird' ) ) {
 	$dbtodsn['pdo'] = 'PDO Firebird';
 	if ( !empty($_REQUEST['fbpath']) ) $fbpath = $_REQUEST['fbpath'];
@@ -58,7 +58,7 @@ if( extension_loaded( 'pdo_firebird' ) ) {
 		$gBitDbUser = 'SYSDBA';
 		$gBitDbPassword = 'masterkey';
 	}
-} 
+}
 if( function_exists( 'sqlite_open' ) ) {
 	$dbtodsn['sqlite'] = 'SQLLite';
 }

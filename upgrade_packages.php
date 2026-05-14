@@ -37,26 +37,26 @@ if( !empty( $_SESSION['upgrade_r1'] ) ) {
 	$gBitSmarty->assign( 'upgrading', $upgrading );
 }
 
-$upgradePath = array (
-	'TikiWiki 1.8' => array(
+$upgradePath =  [
+	'TikiWiki 1.8' => [
 		'TIKIWIKI18' => 'BONNIE',
 		'BONNIE' => 'BWR1',
 		'BWR1' => 'BWR2',
-	),
-	'TikiWiki 1.9' => array(
+	],
+	'TikiWiki 1.9' => [
 		'TIKIWIKI19' => 'TIKIWIKI18',
 		'TIKIWIKI18' => 'BONNIE',
 		'BONNIE' => 'BWR1',
 		'BWR1' => 'BWR2',
-	),
-	'BWR0' => array(
+	],
+	'BWR0' => [
 		'BONNIE' => 'BWR1',
 		'BWR1' => 'BWR2',
-	),
-	'BWR1' => array(
+	],
+	'BWR1' => [
 		'BWR1' => 'BWR2',
-	),
-);
+	],
+];
 
 $gBitSmarty->assign( 'upgradeFrom', $gUpgradeFrom );
 $gBitSmarty->assign( 'upgradeTo', $gUpgradeTo );
@@ -75,7 +75,7 @@ if( !empty( $_REQUEST['upgrade'] ) ) {
 			$gUpgradeTo = $to;
 
 			$gBitInstaller->scanPackages( 'admin/upgrade_inc.php', false );
-			$firstPackages = array_flip( array( 'kernel', 'users', 'categories', 'liberty', 'wiki', 'blogs' ) );
+			$firstPackages = array_flip( [ 'kernel', 'users', 'categories', 'liberty', 'wiki', 'blogs' ] );
 			$secondPackages = array_flip( $upgrading );
 
 			// upgrade the ones that are order critical first

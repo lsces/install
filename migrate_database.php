@@ -37,7 +37,7 @@ if( isset( $_REQUEST['db_src'] ) ) {
 	$gBitSmarty->assign( 'name_dst', $_REQUEST['name_dst'] );
 	$gBitSmarty->assign( 'prefix_dst', $_REQUEST['prefix_dst'] );
 
-	$skip_tables = isset($_REQUEST['skip_tables']) ? $_REQUEST['skip_tables'] : [];
+	$skip_tables = $_REQUEST['skip_tables'] ?? [];
 	$gBitSmarty->assign( 'skip_tables_select', $skip_tables );
 	$empty_tables = isset($_REQUEST['empty_tables']);
 	$gBitSmarty->assign( 'empty_tables', $empty_tables );
@@ -66,9 +66,8 @@ if (isset($_REQUEST['fSubmitDatabase']) || isset($_REQUEST['fUpdateTables'])) {
 	if (testDatabase()) {
 		$gBitSmarty->assign( 'error_src', true );
 		return;
-	} else {
-		$gDb_src = new BitDb();
 	}
+		$gDb_src = new BitDb();
 
 	$tables_src = $gDb_src->MetaTables();
 
@@ -87,9 +86,8 @@ if (isset($_REQUEST['fSubmitDatabase']) || isset($_REQUEST['fUpdateTables'])) {
 	if (testDatabase()) {
 		$gBitSmarty->assign( 'error_dst', true );
 		return;
-	} else {
-		$gDb_dst = new BitDb();
 	}
+		$gDb_dst = new BitDb();
 
 	require_once 'create_config_inc.php';
 	$createHash = [

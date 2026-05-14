@@ -66,7 +66,7 @@ class BitInstaller extends BitSystem {
 		$loginCol = strpos( $pLogin, '@' ) ? 'email' : 'login';
 
 		if( $gBitUser->validate( $pLogin, $pPassword, $pChallenge, $pResponse ) ) {
-			$userInfo = $gBitUser->getUserInfo( array( $loginCol => $pLogin ) );
+			$userInfo = $gBitUser->getUserInfo( [ $loginCol => $pLogin ] );
 
 			if( $userInfo['user_id'] != ANONYMOUS_USER_ID ) {
 				// User is valid and not due to change pass..
@@ -119,7 +119,7 @@ class BitInstaller extends BitSystem {
 	 * @access public
 	 * @return void
 	 */
-	public function registerPackageUpgrade( $pParams, $pUpgradeHash = array() ) {
+	public function registerPackageUpgrade( $pParams, $pUpgradeHash = [] ) {
 		if( $this->verifyPackageUpgrade( $pParams )) {
 			$this->registerPackageVersion( $pParams['package'], $pParams['version'] );
 			$this->mPackageUpgrades[$pParams['package']][$pParams['version']]            = $pParams;
@@ -319,11 +319,11 @@ class BitInstaller extends BitSystem {
 				$errors[$version] = $this->applyUpgrade( $pPackage, $this->mPackageUpgrades[$pPackage][$version]['upgrade'] );
 				if( !empty( $errors[$version] )) {
 					return $errors;
-				} else {
+				}
 					// if the upgrade ended without incidence, we store the package version.
 					// this way any successfully applied upgrade can only be applied once.
 					$this->storeVersion( $pPackage, $version );
-				}
+
 			}
 		}
 
@@ -385,8 +385,8 @@ class BitInstaller extends BitSystem {
 											$completeTableName = $tablePrefix.$tableName;
 											$this->mDb->convertQuery( $completeTableName );
 											foreach( $alter[$tableName] as $from => $flds ) {
-												$sql = ( is_string( $flds ) ) 
-													? $dict->ChangeTableSQL( $completeTableName, $flds ) 
+												$sql = ( is_string( $flds ) )
+													? $dict->ChangeTableSQL( $completeTableName, $flds )
 													: $dict->ChangeTableSQL( $completeTableName, [ $flds ] );
 
 												if( $sql ) {
@@ -702,7 +702,7 @@ function upgrade_query_sort( $a, $b ) {
 		return 1;
 	} elseif( $b == 'SQL92' ) {
 		return -1;
-	} else {
-		return 0;
 	}
+		return 0;
+
 }

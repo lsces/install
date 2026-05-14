@@ -1,9 +1,5 @@
 <?php
 
-use Bitweaver\BitSystem;
-use Bitweaver\Plugins\ResourceBitpackage;
-use Bitweaver\Themes\BitSmarty;
-use Bitweaver\Themes\BitweaverExtension;
 /**
  * @version $Header$
  * @package install
@@ -153,7 +149,7 @@ $bit_root_url = empty( $_REQUEST['baseurl'] )
 global $gBitUser;
 
 if( !empty( $_POST['signin'] ) ) {
-	$gBitInstaller->login( $_REQUEST['user'], $_REQUEST['pass'] );	
+	$gBitInstaller->login( $_REQUEST['user'], $_REQUEST['pass'] );
 } elseif( is_object( $gBitUser ) && !empty( $_COOKIE[$gBitUser->getSiteCookieName()] ) && ( $gBitUser->mUserId = $gBitUser->getUserIdFromCookie( $_COOKIE[$gBitUser->getSiteCookieName()] ))) {
 	$userInfo = $gBitUser->getUserInfo( [ 'user_id' => $gBitUser->mUserId ] );
 

@@ -35,9 +35,9 @@ $install_file[$i]['name'] = 'Migration Complete';
 // currently i can't think of a better way to secure the migrate pages
 // redirect to the installer if we aren't sent here by the installer and the migrate session variable hasn't been set
 if( !isset( $_SESSION['migrate'] ) || $_SESSION['migrate'] != true ||
-	!isset( $_SERVER['HTTP_REFERER'] ) || 
+	!isset( $_SERVER['HTTP_REFERER'] ) ||
 	isset( $_SERVER['HTTP_REFERER'] ) &&
-	( ( !strpos( $_SERVER['HTTP_REFERER'],'install/install.php' ) ) && ( !strpos( $_SERVER['HTTP_REFERER'],'install/upgrade.php' ) ) && ( !strpos( $_SERVER['HTTP_REFERER'],'install/migrate.php' ) ) ) 
+	( ( !strpos( $_SERVER['HTTP_REFERER'],'install/install.php' ) ) && ( !strpos( $_SERVER['HTTP_REFERER'],'install/upgrade.php' ) ) && ( !strpos( $_SERVER['HTTP_REFERER'],'install/migrate.php' ) ) )
 ) {
 	header( 'Location: '.INSTALL_PKG_URL.'install.php' );
 	die;

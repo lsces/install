@@ -31,6 +31,6 @@ if( isset( $_REQUEST['upgrade'] ) ) {
 	// Added check for IIS $_SERVER['HTTPS'] uses 'off' value - wolff_borg
 	header( 'Location: http'.((!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS'] != 'off')?'s':'').'://'.$_SERVER['HTTP_HOST'].INSTALL_PKG_URL.'install.php?step='.( $step + 1 ) );
 	die;
-} else {
-	$gBitSmarty->assign( 'next_step',$step );
 }
+	$gBitSmarty->assign( 'next_step',$step );
+

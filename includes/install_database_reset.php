@@ -17,7 +17,7 @@ if( isset( $_REQUEST['continue_install'] ) ) {
 } elseif( isset( $_REQUEST['reset_config_inc'] ) ) {
 	$fw = fopen($config_file, 'w' );
 	if( isset( $fw ) ) {
-        fwrite( $fw, '');
+		fwrite( $fw, '');
 		fclose( $fw );
 	}
 	header( 'Location: '.INSTALL_PKG_URL.'install.php' );

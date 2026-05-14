@@ -195,7 +195,6 @@ function check_settings() {
 		}
 	}
 
-
 	// PEAR checks
 	$pears = [
 		'PEAR'           => [

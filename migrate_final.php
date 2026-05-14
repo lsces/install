@@ -20,6 +20,5 @@ if( isset( $_REQUEST['enter_bitweaver'] ) ) {
 } elseif( isset( $_REQUEST['continue_install'] ) ) {
 	header( 'Location: '.INSTALL_PKG_URL.'install.php?step=4' );
 	die;
-} else {
-	$gBitSmarty->assign( 'next_step',$step );
 }
+	$gBitSmarty->assign( 'next_step',$step );

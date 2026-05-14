@@ -425,7 +425,6 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 		$gBitInstaller->mPrefs = '';
 		$gBitInstaller->loadConfig();
 
-
 		$gBitInstaller->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."kernel_config` WHERE `package`=?", [ $package ] );
 		// ---------------------- 5. ----------------------
 		// run the defaults through afterwards so we can be sure all tables needed have been created
@@ -459,7 +458,6 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 		}
 		$gBitInstaller->mDb->CompleteTrans();
 
-
 		// ---------------------- 6. ----------------------
 		// register all content types for installed packages
 		foreach( $gBitInstaller->mContentClasses as $package => $classes ){
@@ -470,7 +468,6 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 				}
 			}
 		}
-
 
 		// ---------------------- 7. ----------------------
 		// Do stuff that only applies during the first install
@@ -609,8 +606,6 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 				unset( $_SESSION['email'] );
 			}
 		}
-
-
 
 		// ---------------------- 8. ----------------------
 		// woo! we're done with the installation bit - below here is some generic installer stuff
