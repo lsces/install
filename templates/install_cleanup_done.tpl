@@ -19,7 +19,7 @@
 			{/forminput}
 		</div>
 
-		<p>Since permissions have been modified, you should visit the {smartlink ititle="permission maintenance" ipackage=users ifile="admin/permissions.php"} page to make sure that all permissions are assigned to the correct groups.</p>
+		<p>Since permissions have been modified, you should visit the {smartlink ititle="permission maintenance" ipackage=users ifile="admin/role_permissions.php"} page to make sure that all permissions are assigned to the correct roles.</p>
 	{/if}
 
 	{if $deActivated}

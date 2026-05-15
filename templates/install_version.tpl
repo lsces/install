@@ -22,7 +22,7 @@
 			</p>
 
 			<p class="help">
-				You can visit the {smartlink ititle="Permission Maintenance" ipackage=users ifile="admin/permissions.php"} page at any time to make further adjustments.
+				You can visit the {smartlink ititle="Permission Maintenance" ipackage=users ifile="admin/role_permissions.php"} page at any time to make further adjustments.
 			</p>
 
 

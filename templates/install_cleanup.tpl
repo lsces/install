@@ -131,7 +131,7 @@
 		{/if}
 		{if empty( $insPerms ) and empty( $delPerms )}
 			<p class="alert alert-success">
-				The permissioning system in your installation is up to date and does not require any adjustments. Even though this is true, we recommend you visit the {smartlink ititle="Permission Maintenance" ipackage=users ifile="admin/permissions.php"} page at some point to ensure that all permissions are active.
+				The permissioning system in your installation is up to date and does not require any adjustments. Even though this is true, we recommend you visit the {smartlink ititle="Permission Maintenance" ipackage=users ifile="admin/role_permissions.php"} page at some point to ensure that all permissions are active.
 			</p>
 		{/if}
 	{/legend}
