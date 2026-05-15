@@ -105,12 +105,6 @@ if( isset( $_REQUEST['submit_db_info'] ) ) {
 require_once '../kernel/includes/setup_inc.php';
 use \Bitweaver\Install\BitInstaller;
 
-/* if ( defined( 'ROLE_MODEL' ) ) {
-	use Bitweaver\Users\RoleUser;
-} else {
-	use Bitweaver\Users\BitUser;
-} */
-
 // set some preferences during installation
 global $gBitInstaller, $gBitSystem, $gBitThemes;
 $gBitInstaller = new BitInstaller();

@@ -1,7 +1,6 @@
 <?php
 
 use Bitweaver\BitDb;
-use Bitweaver\Users\BitPermUser;
 use Bitweaver\Users\RolePermUser;
 
 /**
@@ -520,7 +519,7 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`,`is_default`) VALUES ( ".ROOT_USER_ID.", 3, 'Registered', 'Users logged into the system', 'y')" );
 				} else {
 //					$tempUser = new BitUser(); // for BitUser::registerContentType
-					$rootUser = new BitPermUser();
+					$rootUser = new RolePermUser();
 					if( $rootUser->store( $storeHash ) ) {
 						$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_groups` (`user_id`, `group_id`, `group_name`,`group_desc`) VALUES ( ".ROOT_USER_ID.", 1, 'Administrators','Site operators')" );
 						$rootUser->addUserToGroup( ROOT_USER_ID, 1 );
@@ -558,7 +557,7 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 						$anonUser->addUserToRole( ANONYMOUS_USER_ID, ANONYMOUS_TEAM_ID);
 					}
 				} else {
-					$anonUser = new BitPermUser();
+					$anonUser = new RolePermUser();
 					if( $anonUser->store( $storeHash ) ) {
 						// Remove anonymous from registered group
 						$regGroupId = $anonUser->groupExists( 'Registered', ROOT_USER_ID );
@@ -588,7 +587,7 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 						\Bitweaver\vd( $adminUser->mErrors ); die;
 					}
 				} else {
-					$adminUser = new BitPermUser();
+					$adminUser = new RolePermUser();
 					if( $adminUser->store( $storeHash ) ) {
 						// add user to admin group
 						$adminUser->addUserToGroup( $adminUser->mUserId, 1 );
