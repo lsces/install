@@ -62,8 +62,6 @@ function set_menu( $pInstallFiles, $pStep ) {
  * Global flag to indicate we are installing
  */
 define( 'BIT_INSTALL', 'TRUE' );
-// Uncomment to switch to role team model ...
-define( 'ROLE_MODEL', 'TRUE' );
 global $gBitSmarty;
 
 // use relative path if no CONFIG_INC path specified - we know we are in installer here...

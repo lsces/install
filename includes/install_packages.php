@@ -299,7 +299,7 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					$query = "SELECT `perm_name` FROM `" . $tablePrefix . "users_permissions` WHERE `package`=?";
 					$perms = $gBitInstaller->mDb->getCol( $query, [ $package ] );
 					// we deal with liberty_content_permissions below
-					$tables = ( defined( 'ROLE_MODEL' ) ) ? [ 'users_role_permissions', 'users_permissions' ] : [ 'users_group_permissions', 'users_permissions' ];
+					$tables = [ 'users_role_permissions', 'users_permissions' ];
 					foreach ( $tables as $table ) {
 						foreach ( $perms as $perm ) {
 							$delete = "
@@ -504,33 +504,18 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					'user_id'   => ROOT_USER_ID,
 				];
 				// now let's set up some default data. Group_id's are hardcoded in users/schema_inc defaults
-				if ( defined( 'ROLE_MODEL' ) ) {
-					$rootUser = new RolePermUser();
-					if( $rootUser->store( $storeHash ) ) {
-						$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`) VALUES ( ".ROOT_USER_ID.", 1, 'Administrators','Site operators')" );
-						$rootUser->addUserToRole( ROOT_USER_ID, 1 );
-					} else {
-						\Bitweaver\vd( 'Errors in root user store:'.PHP_EOL );
-						\Bitweaver\vd( $rootUser->mErrors );
-					}
-					$gBitSystem->storeConfig( 'user_class', 'RolePermUser', USERS_PKG_NAME );
-					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`) VALUES ( ".ROOT_USER_ID.", ".ANONYMOUS_TEAM_ID.", 'Anonymous','Public users not logged')" );
-					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`) VALUES ( ".ROOT_USER_ID.", 2, 'Editors','Site  Editors')" );
-					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`,`is_default`) VALUES ( ".ROOT_USER_ID.", 3, 'Registered', 'Users logged into the system', 'y')" );
+				$rootUser = new RolePermUser();
+				if( $rootUser->store( $storeHash ) ) {
+					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`) VALUES ( ".ROOT_USER_ID.", 1, 'Administrators','Site operators')" );
+					$rootUser->addUserToRole( ROOT_USER_ID, 1 );
 				} else {
-//					$tempUser = new BitUser(); // for BitUser::registerContentType
-					$rootUser = new RolePermUser();
-					if( $rootUser->store( $storeHash ) ) {
-						$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_groups` (`user_id`, `group_id`, `group_name`,`group_desc`) VALUES ( ".ROOT_USER_ID.", 1, 'Administrators','Site operators')" );
-						$rootUser->addUserToGroup( ROOT_USER_ID, 1 );
-					} else {
-						\Bitweaver\vd( 'Errors in root user store:'.PHP_EOL );
-						\Bitweaver\vd( $rootUser->mErrors );
-					}
-					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_groups` (`user_id`, `group_id`, `group_name`,`group_desc`) VALUES ( ".ROOT_USER_ID.", ".ANONYMOUS_GROUP_ID.", 'Anonymous','Public users not logged')" );
-					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_groups` (`user_id`, `group_id`, `group_name`,`group_desc`) VALUES ( ".ROOT_USER_ID.", 2, 'Managers','Site Managers')" );
-					$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_groups` (`user_id`, `group_id`, `group_name`,`group_desc`,`is_default`) VALUES ( ".ROOT_USER_ID.", 3, 'Registered', 'Users logged into the system', 'y')" );
+					\Bitweaver\vd( 'Errors in root user store:'.PHP_EOL );
+					\Bitweaver\vd( $rootUser->mErrors );
 				}
+				$gBitSystem->storeConfig( 'user_class', 'RolePermUser', USERS_PKG_NAME );
+				$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`) VALUES ( ".ROOT_USER_ID.", ".ANONYMOUS_TEAM_ID.", 'Anonymous','Public users not logged')" );
+				$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`) VALUES ( ".ROOT_USER_ID.", 2, 'Editors','Site  Editors')" );
+				$gBitUser->mDb->query( "INSERT INTO `".BIT_DB_PREFIX."users_roles` (`user_id`, `role_id`, `role_name`,`role_desc`,`is_default`) VALUES ( ".ROOT_USER_ID.", 3, 'Registered', 'Users logged into the system', 'y')" );
 
 				$gBitUser->assignLevelPermissions( ANONYMOUS_TEAM_ID, 'basic' );
 				$gBitUser->assignLevelPermissions( 3, 'registered' );
@@ -548,22 +533,12 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					'user_id'         => ANONYMOUS_USER_ID,
 					'default_role_id' => ANONYMOUS_TEAM_ID,
 				];
-				if ( defined( 'ROLE_MODEL' ) ) {
-					$anonUser = new RolePermUser();
-					if( $anonUser->store( $storeHash ) ) {
-						// Remove anonymous from registered group
-						$regRoleId = $anonUser->roleExists( 'Registered', ROOT_USER_ID );
-						$anonUser->removeUserFromRole( ANONYMOUS_USER_ID, $regRoleId );
-						$anonUser->addUserToRole( ANONYMOUS_USER_ID, ANONYMOUS_TEAM_ID);
-					}
-				} else {
-					$anonUser = new RolePermUser();
-					if( $anonUser->store( $storeHash ) ) {
-						// Remove anonymous from registered group
-						$regGroupId = $anonUser->groupExists( 'Registered', ROOT_USER_ID );
-						$anonUser->removeUserFromGroup( ANONYMOUS_USER_ID, $regGroupId );
-						$anonUser->addUserToGroup( ANONYMOUS_USER_ID, ANONYMOUS_GROUP_ID);
-					}
+				$anonUser = new RolePermUser();
+				if( $anonUser->store( $storeHash ) ) {
+					// Remove anonymous from registered group
+					$regRoleId = $anonUser->roleExists( 'Registered', ROOT_USER_ID );
+					$anonUser->removeUserFromRole( ANONYMOUS_USER_ID, $regRoleId );
+					$anonUser->addUserToRole( ANONYMOUS_USER_ID, ANONYMOUS_TEAM_ID);
 				}
 
 				// Create 'Admin' user has id= 2
@@ -576,26 +551,14 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					'user_id'   => 2,
 					'pass_due'  => false,
 				];
-				if ( defined( 'ROLE_MODEL' ) ) {
-					$adminUser = new RolePermUser();
-					if( $adminUser->store( $storeHash ) ) {
-						// add user to admin role
-						$adminUser->addUserToRole( $adminUser->mUserId, 1 );
-						// set admin role as default
-						$adminUser->storeUserDefaultRole( $adminUser->mUserId, 1 );
-					} else {
-						\Bitweaver\vd( $adminUser->mErrors ); die;
-					}
+				$adminUser = new RolePermUser();
+				if( $adminUser->store( $storeHash ) ) {
+					// add user to admin role
+					$adminUser->addUserToRole( $adminUser->mUserId, 1 );
+					// set admin role as default
+					$adminUser->storeUserDefaultRole( $adminUser->mUserId, 1 );
 				} else {
-					$adminUser = new RolePermUser();
-					if( $adminUser->store( $storeHash ) ) {
-						// add user to admin group
-						$adminUser->addUserToGroup( $adminUser->mUserId, 1 );
-						// set admin group as default
-						$adminUser->storeUserDefaultGroup( $adminUser->mUserId, 1 );
-					} else {
-						\Bitweaver\vd( $adminUser->mErrors ); die;
-					}
+					\Bitweaver\vd( $adminUser->mErrors ); die;
 				}
 
 				// kill admin info in $_SESSION

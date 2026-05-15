@@ -27,7 +27,7 @@ while( !$result->EOF ) {
 	foreach( $result->fields as $r ) {
 		$bitPerms[$result->fields['perm_name']][] = $r;
 	}
-	$bitPerms[$result->fields['perm_name']]['sql'][] = ( defined( 'ROLE_MODEL' ) ) ? "DELETE FROM `" . BIT_DB_PREFIX . "users_role_permissions` WHERE `perm_name`='" . $result->fields['perm_name'] . "'" : "DELETE FROM `" . BIT_DB_PREFIX . "users_group_permissions` WHERE `perm_name`='" . $result->fields['perm_name'] . "'";
+	$bitPerms[$result->fields['perm_name']]['sql'][] = "DELETE FROM `" . BIT_DB_PREFIX . "users_role_permissions` WHERE `perm_name`='" . $result->fields['perm_name'] . "'";
 	$bitPerms[$result->fields['perm_name']]['sql'][] = "DELETE FROM `" . BIT_DB_PREFIX . "users_permissions` WHERE `perm_name`='" . $result->fields['perm_name'] . "'";
 	$result->MoveNext();
 }
@@ -145,11 +145,7 @@ if( !empty(  $_REQUEST['resolve_conflicts'] ) ) {
 				$gBitInstaller->mDb->query( $insPerms[$perm]['sql'] );
 				$fixedPermissions[] = $insPerms[$perm];
 				if( !empty( $roleMap[$insPerms[$perm][2]] )) {
-					if ( defined( 'ROLE_MODEL' ) ) {
-						$gBitUser->assignPermissionToRole( $perm, $permMap[$insPerms[$perm][2]] );
-					} else {
-						$gBitUser->assignPermissionToRole( $perm, $permMap[$insPerms[$perm][2]] );
-					}
+					$gBitUser->assignPermissionToRole( $perm, $permMap[$insPerms[$perm][2]] );
 				}
 			}
 		}

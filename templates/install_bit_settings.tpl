@@ -36,11 +36,7 @@
 		{forminput}
 			<select name="bit_index" id="bit_index" class="form-control">
 				<option value="my_home"{if $bit_index eq 'my_home'} selected="selected"{/if}>My home</option>
-				{if $smarty.const.ROLE_MODEL}
-					<option value="role_home"{if $bit_index eq 'role_home'} selected="selected"{/if}>Role home</option>
-				{else}
-					<option value="group_home"{if $bit_index eq 'group_home'} selected="selected"{/if}>Group home</option>
-				{/if}
+				<option value="role_home"{if $bit_index eq 'role_home'} selected="selected"{/if}>Role home</option>
 				{foreach key=name item=package from=$schema }
 					{if $package.homeable and $package.installed}
 						<option {if $package.name=='wiki'}selected="selected"{/if} value="{$package.name}">{$package.name}</option>
