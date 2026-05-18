@@ -473,9 +473,10 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 		// ---------------------- 7. ----------------------
 		// Do stuff that only applies during the first install
 		$gBitInstaller->StartTrans();
+		// Always update the global bitweaver_version to the current fork baseline
+		$gBitSystem->storeVersion( NULL, BITWEAVER_VERSION );
+
 		if( isset( $_SESSION['first_install'] ) && $_SESSION['first_install'] == TRUE ) {
-			// set the version of bitweaver in the database
-			$gBitSystem->storeVersion( NULL, $gBitSystem->getBitVersion() );
 
 			// Some packages have some special things to take care of here.
 			foreach( $gBitInstaller->mInstallModules as $mod ) {
