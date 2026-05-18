@@ -143,7 +143,7 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 		$installedPackages = [];
 		foreach( array_keys( $gBitInstaller->mPackages ) as $key ) {
 			if( !empty( $gBitInstaller->mPackages[$key]['installed'] ) ) {
-				array_push( $installedPackages, $package );
+				array_push( $installedPackages, $key );
 			}
 		}
 
@@ -403,11 +403,13 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					$gBitSystem->storeConfig( 'package_'.$package , NULL );
 					$gBitSystem->storeConfig( 'package_'.$package , 'y', $package );
 
-					// we can assume that the latest upgrade version available for a package is the most current version number for that package
+					// Store version: prefer latest upgrade file, then schema-declared, then BITWEAVER_VERSION baseline
 					if( $version = $gBitInstaller->getLatestUpgradeVersion( $package )) {
 						$gBitSystem->storeVersion( $package, $version );
 					} elseif( !empty( $gBitInstaller->mPackages[$package]['version'] )) {
 						$gBitSystem->storeVersion( $package, $gBitInstaller->mPackages[$package]['version'] );
+					} else {
+						$gBitSystem->storeVersion( $package, BITWEAVER_VERSION );
 					}
 
 					$gBitInstaller->mPackages[ $package ]['installed'] = TRUE;

@@ -21,9 +21,9 @@
 				<input type="hidden" name="step" value="{$next_step}" />
 				<input type="hidden" name="method" value="install" />
 
-				{* include required packages during first install *}
+				{* include required packages during first install only *}
 				{foreach from=$schema key=package item=item}
-					{if $item.required|default:false and !$item.installed}
+					{if $first_install and $item.required|default:false and !$item.installed}
 						<input type="hidden" name="packages[]" value="{$package}" />
 					{/if}
 				{/foreach}
