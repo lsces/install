@@ -87,7 +87,11 @@ if( !empty( $_REQUEST['reload'] )) {
 }
 
 // for pages that should only be shown during a first install
-if( ( empty( $gBitDbType ) || !$gBitUser->isAdmin() ) || ( $_SESSION['first_install'] ) ) {
+// Drive first-install mode from DB state only — installer access is controlled externally via symlink
+if( !empty( $gBitDbType ) && $gBitInstaller->isInstalled() ) {
+	unset( $_SESSION['first_install'] );
+}
+if( empty( $gBitDbType ) || isset( $_SESSION['first_install'] ) ) {
 	$onlyDuringFirstInstall = TRUE;
 	$_SESSION['first_install'] = TRUE;
 } else {

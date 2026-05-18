@@ -40,7 +40,7 @@ function set_menu( $pInstallFiles, $pStep ) {
 
 	foreach( $pInstallFiles as $key => $menu_step ) {
 		if( !isset( $menu_step['state'] ) ) {
-			if( !empty( $gBitDbType ) && $gBitUser->isAdmin() && !$_SESSION['first_install'] ) {
+			if( !empty( $gBitDbType ) && !isset( $_SESSION['first_install'] ) ) {
 				$pInstallFiles[$key]['state'] = 'complete';
 				$pInstallFiles[$key]['icon'] = 'icon-ok';
 			} else {
