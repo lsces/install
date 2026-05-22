@@ -88,33 +88,27 @@ if( !empty( $gLibertySystem->mServices ) ) {
 // ===================== Process Form =====================
 // create missing tables if possible
 if (!empty( $_REQUEST['create_tables'] ) && !empty( $dbIntegrity )) {
-	$gBitInstallDb = ADONewConnection( $gBitDbType );
+	$dict = NewDataDictionary( $gBitInstaller->mDb->mDb, 'firebird' );
 
-	if ($gBitInstallDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbType != 'pdo' ? $gBitDbName : NULL )) {
-		$dict = NewDataDictionary( $gBitInstallDb, 'firebird' );
+	if (!$gBitInstaller->mDb->getCaseSensitivity()) {
+		$dict->connection->nameQuote = '';
+	}
 
-		if (!$gBitInstaller->mDb->getCaseSensitivity()) {
-			$dict->connection->nameQuote = '';
-		}
+	if (!empty( $gDebug ) || !empty( $_REQUEST['debug'] )) {
+		$gBitInstaller->mDb->mDb->debug = 99;
+	}
 
-		if (!empty( $gDebug ) || !empty( $_REQUEST['debug'] )) {
-			$gBitInstallDb->debug = 99;
-		}
+	// If we use MySql check which storage engine to use
+	$build = isset( $_SESSION['use_innodb'] )
+		? ( ( $_SESSION['use_innodb'] == true ) ? [ 'NEW', 'MYSQL' => 'ENGINE=INNODB' ] : [ 'NEW', 'MYSQL' => 'ENGINE=MYISAM' ] ) : 'NEW';
 
-		// If we use MySql check which storage engine to use
-		$build = isset( $_SESSION['use_innodb'] )
-			? ( ( $_SESSION['use_innodb'] == true ) ? [ 'NEW', 'MYSQL' => 'ENGINE=INNODB' ] : [ 'NEW', 'MYSQL' => 'ENGINE=MYISAM' ] ) : 'NEW';
-
-		$tablePrefix = $gBitInstaller->getTablePrefix();
-		foreach( $dbIntegrity as $package => $info ) {
-			foreach( $info['tables'] as $table ) {
-				$completeTableName = $tablePrefix.$table['name'];
-				$sql = $dict->CreateTableSQL( $completeTableName, $gBitInstaller->mPackages[$package]['tables'][$table['name']], $build );
-				// Uncomment this line to see the create sql
-				//vd( $sql );
-				if( $sql ) {
-					$dict->ExecuteSQLArray( $sql );
-				}
+	$tablePrefix = $gBitInstaller->getTablePrefix();
+	foreach( $dbIntegrity as $package => $info ) {
+		foreach( $info['tables'] as $table ) {
+			$completeTableName = $tablePrefix.$table['name'];
+			$sql = $dict->CreateTableSQL( $completeTableName, $gBitInstaller->mPackages[$package]['tables'][$table['name']], $build );
+			if( $sql ) {
+				$dict->ExecuteSQLArray( $sql );
 			}
 		}
 	}
