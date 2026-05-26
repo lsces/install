@@ -15,7 +15,7 @@
 					<h3>{$package}</h3>
 					<input type="hidden" name="packages[]" value="{$package}" />
 					<dl>
-						<dt>{$gBitSystem->getVersion($package)}</dt>
+						<dt>{$gBitInstaller->getVersion($package)}</dt>
 						<dd><small>Currently installed version</small></dd>
 						{foreach from=$upgrade item=data key=version}
 							<dt>{$data.version}</dt>

@@ -285,6 +285,25 @@ class BitInstaller extends BitSystem {
 	}
 
 	/**
+	 * getVersion reads the installed version from DB during BIT_INSTALL (loadConfig is blocked, so we query directly).
+	 */
+	public function getVersion( ?string $pPackage = null, $pDefault = BITWEAVER_VERSION ): string {
+		$config = empty( $pPackage ) ? 'bitweaver_version' : "package_{$pPackage}_version";
+		if( !empty( $this->mDb ) ) {
+			try {
+				$query = "SELECT `config_value` FROM `" . BIT_DB_PREFIX . "kernel_config` WHERE `config_name`=?";
+				$result = $this->mDb->getOne( $query, [ $config ] );
+				if( !empty( $result ) ) {
+					return $result;
+				}
+			} catch( \Throwable $e ) {
+				// kernel_config may not exist during a fresh install
+			}
+		}
+		return $pDefault;
+	}
+
+	/**
 	 * upgradePackage
 	 *
 	 * @param string $pPackage
@@ -309,7 +328,7 @@ class BitInstaller extends BitSystem {
 	public function upgradePackageVersions( $pPackage ) {
 		if( !empty( $pPackage ) && !empty( $this->mPackageUpgrades[$pPackage] )) {
 			// make sure everything is in the right order
-			uksort( $this->mPackageUpgrades[$pPackage], 'upgrade_version_sort' );
+			uksort( $this->mPackageUpgrades[$pPackage], 'Bitweaver\Install\upgrade_version_sort' );
 
 			foreach( array_keys( $this->mPackageUpgrades[$pPackage] ) as $version ) {
 				// version we are upgrading from
@@ -520,7 +539,7 @@ class BitInstaller extends BitSystem {
 						if( !empty( $sql ) ) $sql = null;
 						break;
 					case 'QUERY':
-						uksort( $step, 'upgrade_query_sort' );
+						uksort( $step, 'Bitweaver\Install\upgrade_query_sort' );
 						foreach( array_keys( $step ) as $dbType ) {
 							if( $dbType == 'MYSQL' && preg_match( '/mysql/', $gBitDbType )) {
 								$sql = $step[$dbType];
@@ -686,7 +705,7 @@ function upgrade_package_sort( $a, $b ) {
  * @return numeric sort direction
  */
 function upgrade_version_sort( $a, $b ) {
-	return version_compare( $a, $b, '>' );
+	return version_compare( $a, $b );
 }
 
 /**
