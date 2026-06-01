@@ -328,7 +328,7 @@ class BitInstaller extends BitSystem {
 	public function upgradePackageVersions( $pPackage ) {
 		if( !empty( $pPackage ) && !empty( $this->mPackageUpgrades[$pPackage] )) {
 			// make sure everything is in the right order
-			uksort( $this->mPackageUpgrades[$pPackage], 'Bitweaver\Install\upgrade_version_sort' );
+			uksort( $this->mPackageUpgrades[$pPackage], fn($a, $b) => upgrade_version_sort($a, $b) );
 
 			foreach( array_keys( $this->mPackageUpgrades[$pPackage] ) as $version ) {
 				// version we are upgrading from
@@ -539,7 +539,7 @@ class BitInstaller extends BitSystem {
 						if( !empty( $sql ) ) $sql = null;
 						break;
 					case 'QUERY':
-						uksort( $step, 'Bitweaver\Install\upgrade_query_sort' );
+						uksort( $step, fn($a, $b) => upgrade_query_sort($a, $b) );
 						foreach( array_keys( $step ) as $dbType ) {
 							if( $dbType == 'MYSQL' && preg_match( '/mysql/', $gBitDbType )) {
 								$sql = $step[$dbType];
