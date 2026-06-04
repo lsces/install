@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<style type="text/css">
 		{* hidden from 4.x browsers: *}
-		@import "{$smarty.const.THEMES_PKG_URL}css/colourstrap-full.css";
+		@import "{$smarty.const.THEMES_PKG_URL}css/bootstrap.css";
 		@import "{$smarty.const.INSTALL_PKG_URL}css/install.css";
 	</style>
 	<title>Install Bitweaver - {$browserTitle}</title>
