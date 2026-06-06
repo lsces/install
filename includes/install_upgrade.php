@@ -13,6 +13,12 @@ $errors = $success = [];
 $gBitInstaller->loadAllUpgradeFiles();
 
 if( !empty( $_REQUEST['upgrade_packages'] )) {
+	// install_packages.php creates $gBitInstallDb but that runs in a previous request.
+	// Re-establish the connection here for the upgrade step.
+	if( empty( $gBitInstallDb ) ) {
+		$gBitInstallDb = ADONewConnection( $gBitDbType );
+		$gBitInstallDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbType != 'pdo' ? $gBitDbName : null );
+	}
 	if( !empty( $gDebug ) || !empty( $_REQUEST['debug'] ) ) {
 		$gBitInstallDb->debug = 99;
 	}
