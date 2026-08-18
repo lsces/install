@@ -65,7 +65,12 @@ define( 'BIT_INSTALL', 'TRUE' );
 global $gBitSmarty;
 
 // use relative path if no CONFIG_INC path specified - we know we are in installer here...
-$config_file = empty($_SERVER['CONFIG_INC']) ? '../config/kernel/config_inc.php' : $_SERVER['CONFIG_INC'];
+// (relative path resolves against PHP's real, symlink-followed cwd, not the site's URL
+// path - use DOCUMENT_ROOT instead so a symlinked install/ doesn't write into the wrong
+// site's config; see the matching fix in create_config_inc.php)
+$config_file = empty($_SERVER['CONFIG_INC'])
+	? ( empty( $_SERVER['DOCUMENT_ROOT'] ) ? '../config/kernel/config_inc.php' : $_SERVER['DOCUMENT_ROOT'].'/config/kernel/config_inc.php' )
+	: $_SERVER['CONFIG_INC'];
 // We can't call clean_file_path here even though we would like to.
 $config_file = strpos($_SERVER["SERVER_SOFTWARE"],"IIS") ? str_replace( "/", "\\", $config_file) : $config_file;
 

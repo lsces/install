@@ -181,11 +181,33 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 						// in case prefix has backticks for schema
 						$sql = $dict->CreateTableSQL( $completeTableName, $gBitInstaller->mPackages[$package]['tables'][$tableName], $build );
 						for ( $sqlIdx = 0; $sqlIdx < count( $sql ); $sqlIdx++ ) {
-							$gBitKernelDb->convertQuery( $sql[$sqlIdx] );
+							// raw CONSTRAINT text in schema_inc.php files is written with backticks,
+							// but ADODB's own _genFields()/lens_ParseArgs() tokenizer already converts
+							// them to double quotes internally while parsing the "CONSTRAINT '...'"
+							// idiom (independent of nameQuote) - strip those quotes here rather than
+							// backticks, which never survive to this point. This stack is always
+							// Firebird/pdo (case-insensitive), so no identifier quoting is wanted at
+							// all - not trusting $gBitKernelDb's mType/getCaseSensitivity() here (see
+							// comment above), which doesn't reliably resolve in this spot.
+							$sql[$sqlIdx] = str_replace( [ '`', '"' ], '', $sql[$sqlIdx] );
 						}
-						if ($sql && $dict->ExecuteSQLArray( $sql ) <= 1) {
-							$errors[] = 'Failed to create table ' . $completeTableName;
-							$failedcommands[] = implode( " ", $sql );
+						if ($sql) {
+							try {
+								// ExecuteSQLArray()'s own $continueOnError logic (default true) relies
+								// on Execute() returning false on failure - but this connection has
+								// PDO::ERRMODE_EXCEPTION set, so a single failed statement (e.g. an
+								// uninstall's DROP SEQUENCE on a sequence that was never actually
+								// created, from a partial/aborted earlier install) throws instead of
+								// letting the array continue, aborting the whole page. Catch it and
+								// treat like any other per-table failure instead.
+								$result = $dict->ExecuteSQLArray( $sql );
+							} catch( \Throwable $e ) {
+								$result = 0;
+							}
+							if ($result <= 1) {
+								$errors[] = 'Failed to create table ' . $completeTableName;
+								$failedcommands[] = implode( " ", $sql );
+							}
 						}
 					}
 				}
@@ -211,7 +233,10 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					$completeTableName = $tablePrefix . $tableName;
 					foreach ( array_keys( $gBitInstaller->mPackages[$package]['constraints'][$tableName] ) as $constraintName ) {
 						$sql = 'ALTER TABLE `' . $completeTableName . '` ADD CONSTRAINT `' . $constraintName . '` ' . $gBitInstaller->mPackages[$package]['constraints'][$tableName][$constraintName];
-						$gBitKernelDb->convertQuery( $sql );
+						// this one is plain PHP string concatenation (not routed through ADODB's
+						// _genFields() tokenizer like the CreateTableSQL case above), so only
+						// literal backticks are present here - no quotes to also strip
+						$sql = str_replace( '`', '', $sql );
 						$ret = $gBitInstallDb->Execute( $sql );
 						if ($ret === false) {
 							$errors[] = 'Failed to add constraint ' . $constraintName . ' to table ' . $completeTableName;
