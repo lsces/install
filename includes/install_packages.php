@@ -387,12 +387,20 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 				// now we can start removing content if requested
 				// lots of foreach loops in here
 				if( in_array( 'content', $removeActions ) ) {
-					// first we need to work out the package specific content details
-					foreach( $gLibertySystem->mContentTypes as $contentType ) {
-						if( $contentType['handler_package'] == $package ) {
+					// $gLibertySystem->mContentTypes is empty during install (loadContentTypes()'s
+					// own BIT_INSTALL guard - see the 'settings' cleanup above for the same issue),
+					// so this foreach never ran and liberty_content_types rows were never cleaned
+					// up here - leaving a leftover row for a reinstall's defaults step (below) to
+					// collide with on its own INSERT (e.g. contact's 'contactperson'). Same fix as
+					// 'settings': derive each content_type_guid from the package's registered
+					// classes directly instead.
+					foreach( $gBitInstaller->mContentClasses[$package] ?? [] as $key => $objectClass ) {
+						$class = "\\Bitweaver\\".ucfirst( $package )."\\$key";
+						$tempObject = new $class();
+						if( !empty( $tempObject->mContentTypeGuid ) ) {
 							// first we get a list of content_ids which we can use to scan various tables without content_type_guid column for data
 							$query = "SELECT `content_id` FROM `".$tablePrefix."liberty_content` WHERE `content_type_guid`=?";
-							$rmContentIds = $gBitInstaller->mDb->getCol( $query, [ $contentType['content_type_guid'] ]);
+							$rmContentIds = $gBitInstaller->mDb->getCol( $query, [ $tempObject->mContentTypeGuid ]);
 
 							// list of core tables where bitweaver might store relevant data
 							// firstly, we delete using the content ids
@@ -444,10 +452,10 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 								$delete = "
 									DELETE FROM `".$tablePrefix.$table."`
 									WHERE `content_type_guid`=?";
-								$ret = $gBitInstaller->mDb->query( $delete, [ $contentType['content_type_guid'] ]);
+								$ret = $gBitInstaller->mDb->query( $delete, [ $tempObject->mContentTypeGuid ]);
 								if (!$ret) {
 									$errors[] = "Error deleting content type";
-									$failedcommands[] = $delete." ".$contentType['content_type_guid'];
+									$failedcommands[] = $delete." ".$tempObject->mContentTypeGuid;
 								}
 							}
 						}
