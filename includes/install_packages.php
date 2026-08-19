@@ -617,6 +617,16 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					$adminUser->addUserToRole( $adminUser->mUserId, 1 );
 					// set admin role as default
 					$adminUser->storeUserDefaultRole( $adminUser->mUserId, 1 );
+
+					// $adminUser is its own object, separate from the global $gBitUser - nothing
+					// here ever logs the real admin into the actual session, so every later step
+					// in this same first-install run (Cleanup, Settings, Content) was still acting
+					// as whatever unauthenticated context $gBitUser started as. There's no login
+					// prompt to fall back on either: install.php's own login-redirect only fires
+					// once first_install is false, i.e. never during an active first-install run.
+					$gBitUser->mUserId = $adminUser->mUserId;
+					$gBitUser->mInfo   = $adminUser->mInfo;
+					$gBitUser->loadPermissions( TRUE );
 				} else {
 					\Bitweaver\vd( $adminUser->mErrors ); die;
 				}
