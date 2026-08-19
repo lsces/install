@@ -30,6 +30,18 @@ if( empty( $gBitUser->mUserId ) || $gBitUser->mUserId <= ROOT_USER_ID ) {
 	}
 }
 
+// Same reasoning as install_packages.php's explicit bithtml activation: loadConfig() has its own
+// BIT_INSTALL guard, so getConfig() never actually reads the DB during install, and
+// registerPlugin()'s auto_activate path can't correct for that either (its own in-memory mPlugins
+// update happens before the plugin object exists in mPlugins, so it's silently discarded). This
+// needs to run fresh in *every* install-context request that might upload a file, not just the
+// Packages step - $gLibertySystem is rebuilt from scratch each request, so whatever got fixed
+// there doesn't carry over here.
+global $gLibertySystem;
+if( !empty( $gLibertySystem->mPlugins[LIBERTY_DEFAULT_MIME_HANDLER] ) ) {
+	$gLibertySystem->setActivePlugin( LIBERTY_DEFAULT_MIME_HANDLER );
+}
+
 $pumpList = [];
 foreach( array_keys( $gBitSystem->mPackages ) as $package ) {
 	if( $gBitInstaller->isPackageActive( $package ) ) {

@@ -551,6 +551,20 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 				$gBitSystem->storeConfig( 'default_format', PLUGIN_GUID_BITHTML, LIBERTY_PKG_NAME );
 			}
 
+			// Explicitly activate the default mime handler, same reasoning as bithtml above:
+			// loadConfig() has its own BIT_INSTALL guard (kernel BitSystem.php) so getConfig()
+			// never actually reads the DB during install - registerPlugin()'s auto_activate
+			// path relies on getConfig() to decide whether to activate, and even when it does
+			// fire, its own in-memory mPlugins update happens before the plugin is merged into
+			// mPlugins, so it gets silently discarded regardless. Confirmed live: no file upload
+			// works on a fresh install without this - mapper's datapump pump failed with "No
+			// suitable verify function found" (LIBERTY_DEFAULT_MIME_HANDLER, whichever mime
+			// plugin that resolves to per config_inc.php, never actually became active).
+			global $gLibertySystem;
+			if( !empty( $gLibertySystem->mPlugins[LIBERTY_DEFAULT_MIME_HANDLER] ) ) {
+				$gLibertySystem->setActivePlugin( LIBERTY_DEFAULT_MIME_HANDLER );
+			}
+
 			// Installing users has some special things to take care of here and needs a separate check.
 			if( in_array( 'users', $_REQUEST['packages'] ) ) {
 				// Creating 'root' user has id=1. phpBB starts with user_id=2, so this is a hack to keep things in sync
