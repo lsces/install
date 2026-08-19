@@ -350,6 +350,38 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 							$failedcommands[] = $delete." ".$package;
 						}
 					}
+
+					// registerSchemaDefault() lets a package's schema_inc.php seed
+					// liberty_xref_group/liberty_xref_item rows (see mapper's 'general'/'layers'
+					// groups) - those never get cleaned up here otherwise, so a reinstall's
+					// defaults step (below) collides with its own leftover rows on the unique
+					// (x_group, content_type_guid) / (item, content_type_guid, x_group) keys.
+					// $gLibertySystem->mContentTypes is deliberately never loaded inside the
+					// installer (loadContentTypes()'s own BIT_INSTALL guard), so the guid has to
+					// come from actually instantiating the package's registered class(es) - same
+					// mechanism step 6 below uses - and reading mContentTypeGuid straight off the
+					// object; handler_package can differ from content_type_guid (e.g. stock's
+					// stockassembly/stockcomponent), so the package name itself isn't safe to use.
+					if( !empty( $gBitInstaller->mContentClasses[$package] ) ) {
+						foreach( $gBitInstaller->mContentClasses[$package] as $key => $objectClass ) {
+							$class = "\\Bitweaver\\".ucfirst( $package )."\\$key";
+							$tempObject = new $class();
+							if( empty( $tempObject->mContentTypeGuid ) ) {
+								continue;
+							}
+							$xrefTables = [ 'liberty_xref_item', 'liberty_xref_group' ];
+							foreach( $xrefTables as $table ) {
+								$delete = "
+									DELETE FROM `".$tablePrefix.$table."`
+									WHERE `content_type_guid`=?";
+								$ret = $gBitInstaller->mDb->query( $delete, [ $tempObject->mContentTypeGuid ] );
+								if (!$ret) {
+									$errors[] = "Error deleting $table for package ". $package;
+									$failedcommands[] = $delete." ".$package;
+								}
+							}
+						}
+					}
 				}
 
 				// now we can start removing content if requested
