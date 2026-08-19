@@ -12,7 +12,14 @@
 // assign next step in installation process
 $gBitSmarty->assign( 'next_step',$step );
 
-$gBitUser->mUserId = ROOT_USER_ID;
+// Only fall back to ROOT_USER_ID when nobody's actually logged in yet - it deliberately carries no
+// role/permission grants (it's not meant to be used as a real actor), so forcing every pump to run
+// as root breaks any pump that needs a real permission check, e.g. mapper's file upload
+// (p_liberty_attach_attachments). The real admin set up in the earlier Admin step already has full
+// permissions and should be left alone here.
+if( empty( $gBitUser->mUserId ) || !$gBitUser->isRegistered() ) {
+	$gBitUser->mUserId = ROOT_USER_ID;
+}
 
 $pumpList = [];
 foreach( array_keys( $gBitSystem->mPackages ) as $package ) {

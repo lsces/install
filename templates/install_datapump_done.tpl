@@ -15,8 +15,15 @@
 			{if $error}
 				<li class="error">
 					The following errors occurred during the addition of the data
-					<br />
-					{$error}
+					<ul>
+					{if is_array($error)}
+						{foreach from=$error item=e}
+							<li>{$e}</li>
+						{/foreach}
+					{else}
+						<li>{$error}</li>
+					{/if}
+					</ul>
 				</li>
 			{else}
 				<li class="success">

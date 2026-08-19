@@ -59,9 +59,9 @@
 		{formlabel label="Site Style" for="site_style"}
 		{forminput}
 			<select name="site_style" id="site_style" class="form-control">
-				{* foreach from=$stylesList item=s}
+				{foreach from=$stylesList item=s}
 						<option value="{$s.style}" {if $s.style eq "basic"}selected="selected"{/if}>{$s.style}</option>
-				{/foreach *}
+				{/foreach}
 			</select>
 			{formhelp note="Pick the look and feel style you wish to use. Custom styles can be added to the config/themes/ directory and then selected in the themes administration panel."}
 		{/forminput}
