@@ -262,9 +262,22 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 							$completeTableName = $sequencePrefix . $gBitInstaller->mPackages[$package]['indexes'][$tableIdx]['table'];
 
 							$sql = $dict->CreateIndexSQL( $tableIdx, $completeTableName, $gBitInstaller->mPackages[$package]['indexes'][$tableIdx]['cols'], $gBitInstaller->mPackages[$package]['indexes'][$tableIdx]['opts'] );
-							if ($sql && $dict->ExecuteSQLArray( $sql ) <= 1) {
-								$errors[] = 'Failed to create index ' . $tableIdx . " on " . $completeTableName;
-								$failedcommands[] = implode( " ", $sql );
+							if ($sql) {
+								// same reasoning as the table-creation try/catch above: an index left
+								// over from an earlier partial/aborted install (e.g. tables survived
+								// because 'tables' wasn't in this round's removeActions) throws on this
+								// PDO::ERRMODE_EXCEPTION connection instead of ExecuteSQLArray()
+								// returning false - catch it and report per-index like any other
+								// failure instead of fataling the whole page.
+								try {
+									$result = $dict->ExecuteSQLArray( $sql );
+								} catch( \Throwable $e ) {
+									$result = 0;
+								}
+								if ($result <= 1) {
+									$errors[] = 'Failed to create index ' . $tableIdx . " on " . $completeTableName;
+									$failedcommands[] = implode( " ", $sql );
+								}
 							}
 						}
 					}
