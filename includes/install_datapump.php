@@ -15,10 +15,19 @@ $gBitSmarty->assign( 'next_step',$step );
 // Only fall back to ROOT_USER_ID when nobody's actually logged in yet - it deliberately carries no
 // role/permission grants (it's not meant to be used as a real actor), so forcing every pump to run
 // as root breaks any pump that needs a real permission check, e.g. mapper's file upload
-// (p_liberty_attach_attachments). The real admin set up in the earlier Admin step already has full
-// permissions and should be left alone here.
-if( empty( $gBitUser->mUserId ) || !$gBitUser->isRegistered() ) {
-	$gBitUser->mUserId = ROOT_USER_ID;
+// (p_liberty_attach_attachments). Don't assume install_packages.php's own admin-creation step ran
+// in *this* request/session (a resumed or re-visited install run may have created the admin in an
+// earlier pass) - look the real admin (user_id 2, the hardcoded convention that same step uses) up
+// directly whenever $gBitUser isn't already a real, non-root registered user.
+if( empty( $gBitUser->mUserId ) || $gBitUser->mUserId <= ROOT_USER_ID ) {
+	$adminInfo = $gBitUser->getUserInfo( [ 'user_id' => 2 ] );
+	if( !empty( $adminInfo['user_id'] ) && $adminInfo['user_id'] == 2 ) {
+		$gBitUser->mUserId = 2;
+		$gBitUser->mInfo   = $adminInfo;
+		$gBitUser->loadPermissions( TRUE );
+	} else {
+		$gBitUser->mUserId = ROOT_USER_ID;
+	}
 }
 
 $pumpList = [];
