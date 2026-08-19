@@ -97,7 +97,7 @@ if( !empty( $_REQUEST['reload'] )) {
 if( empty( $step ) && !empty( $gBitDbType ) && $gBitInstaller->isInstalled() ) {
 	unset( $_SESSION['first_install'] );
 }
-if( empty( $gBitDbType ) || isset( $_SESSION['first_install'] ) ) {
+if( empty( $gBitDbType ) || !empty( $_SESSION['first_install'] ) ) {
 	$onlyDuringFirstInstall = TRUE;
 	$_SESSION['first_install'] = TRUE;
 } else {
