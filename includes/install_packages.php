@@ -380,6 +380,13 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 					// groups) - those never get cleaned up here otherwise, so a reinstall's
 					// defaults step (below) collides with its own leftover rows on the unique
 					// (x_group, content_type_guid) / (item, content_type_guid, x_group) keys.
+					// liberty_content_types is deliberately NOT included here - that table
+					// predates liberty_xref and already has its own original, idempotent
+					// registration path (LibertySystem::registerContentType(), called from each
+					// package's bit_setup_inc.php - checks the DB before inserting). A package
+					// declaring liberty_content_types rows in its own 'defaults' array as well is
+					// a bug in that package (see contact's schema_inc.php history), not something
+					// the installer should paper over generically for every package.
 					// $gLibertySystem->mContentTypes is deliberately never loaded inside the
 					// installer (loadContentTypes()'s own BIT_INSTALL guard), so the guid has to
 					// come from actually instantiating the package's registered class(es) - same
