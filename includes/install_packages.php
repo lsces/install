@@ -66,7 +66,17 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 		ini_set('sybct.min_server_severity', '11');
 	}
 
-	$gBitInstallDb = ADONewConnection( $gBitDbType );
+	// Share $gBitInstaller->mDb's own raw connection rather than opening a second, independent
+	// one - a separate connection means a separate Firebird transaction, so nothing done through
+	// it can ever be rolled back by a failure later in the sequence (steps 4+ below use
+	// $gBitInstaller->mDb directly). That's exactly how a duplicate CONTACT_PARENT_ID_IDX survived
+	// a failed reinstall as a committed hangover object instead of the whole cycle rolling back
+	// together - a later step's fatal can't undo DDL an earlier step's own CompleteTrans() already
+	// committed on a different connection. Sharing the connection means every StartTrans()/
+	// CompleteTrans() pair below nests on the same ADODB transOff counter, so any RollbackTrans()
+	// (or an uncaught fatal that never reaches a CompleteTrans() at all, closing the connection
+	// with the transaction still open) rolls back everything done since the very first StartTrans().
+	$gBitInstallDb = $gBitInstaller->mDb->mDb;
 
 	if( !empty( $gDebug ) || !empty( $_REQUEST['debug'] ) ) {
 		$gBitInstaller->mDb->debug(99);
@@ -74,7 +84,7 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 	}
 
 	// by now $method should be populated with something
-	if( $gBitInstallDb->Connect( $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbType != 'pdo' ? $gBitDbName : NULL ) && !empty( $method ) ) {
+	if( $gBitInstaller->mDb->isValid() && !empty( $method ) ) {
 		if ( $_SESSION['first_install'] && $gBitDbType == 'firebird' ) {
 // Leave commented for present, new installations on Firebird should use FB2.1.x and above which have an internal function library
 //			$result = $gBitInstallDb->Execute( "DECLARE EXTERNAL FUNCTION LOWER CSTRING(80) RETURNS CSTRING(80) FREE_IT ENTRY_POINT 'IB_UDF_lower' MODULE_NAME 'ib_udf'" );
@@ -192,18 +202,13 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 							$sql[$sqlIdx] = str_replace( [ '`', '"' ], '', $sql[$sqlIdx] );
 						}
 						if ($sql) {
-							try {
-								// ExecuteSQLArray()'s own $continueOnError logic (default true) relies
-								// on Execute() returning false on failure - but this connection has
-								// PDO::ERRMODE_EXCEPTION set, so a single failed statement (e.g. an
-								// uninstall's DROP SEQUENCE on a sequence that was never actually
-								// created, from a partial/aborted earlier install) throws instead of
-								// letting the array continue, aborting the whole page. Catch it and
-								// treat like any other per-table failure instead.
-								$result = $dict->ExecuteSQLArray( $sql );
-							} catch( \Throwable $e ) {
-								$result = 0;
-							}
+							// This connection has PDO::ERRMODE_EXCEPTION set, so a failed statement
+							// throws rather than ExecuteSQLArray() returning false - deliberately left
+							// uncaught: it should fatal and, since steps 1-8 all now share one
+							// connection/transaction (see the $gBitInstallDb comment above), that fatal
+							// rolls back the whole install cycle rather than leaving this table's
+							// partial DDL committed on its own.
+							$result = $dict->ExecuteSQLArray( $sql );
 							if ($result <= 1) {
 								$errors[] = 'Failed to create table ' . $completeTableName;
 								$failedcommands[] = implode( " ", $sql );
@@ -263,17 +268,11 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 
 							$sql = $dict->CreateIndexSQL( $tableIdx, $completeTableName, $gBitInstaller->mPackages[$package]['indexes'][$tableIdx]['cols'], $gBitInstaller->mPackages[$package]['indexes'][$tableIdx]['opts'] );
 							if ($sql) {
-								// same reasoning as the table-creation try/catch above: an index left
-								// over from an earlier partial/aborted install (e.g. tables survived
-								// because 'tables' wasn't in this round's removeActions) throws on this
-								// PDO::ERRMODE_EXCEPTION connection instead of ExecuteSQLArray()
-								// returning false - catch it and report per-index like any other
-								// failure instead of fataling the whole page.
-								try {
-									$result = $dict->ExecuteSQLArray( $sql );
-								} catch( \Throwable $e ) {
-									$result = 0;
-								}
+								// Same reasoning as table creation above: left uncaught deliberately,
+								// so a duplicate index (a hangover from an earlier partial install)
+								// fatals and rolls back the whole shared-connection transaction instead
+								// of leaving this index's package half-installed.
+								$result = $dict->ExecuteSQLArray( $sql );
 								if ($result <= 1) {
 									$errors[] = 'Failed to create index ' . $tableIdx . " on " . $completeTableName;
 									$failedcommands[] = implode( " ", $sql );
