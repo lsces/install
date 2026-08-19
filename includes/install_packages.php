@@ -136,6 +136,18 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 		$gBitKernelDb = new BitDb();
 		$gBitKernelDb->mType = $gBitDbType;
 
+		// Genuine outermost transaction for the whole install/reinstall/uninstall cycle. Steps
+		// 1-7 below each already call their own StartTrans()/CompleteTrans() pair on this same
+		// shared connection - without this outer pair, each of those is itself the outermost
+		// call (ADODB's transOff counter starts back at 0 between them), so each one commits for
+		// real as soon as its own CompleteTrans() runs, regardless of what fails in a later step.
+		// Wrapping everything in one more StartTrans() here makes all of those nest instead (each
+		// inner CompleteTrans() just decrements transOff), so the *real* commit/rollback only
+		// happens at the matching CompleteTrans() at the very end of this block - and a FailTrans()
+		// (or a fatal that never even reaches that point, leaving the transaction open when the
+		// connection closes) correctly takes the whole cycle down with it.
+		$gBitInstallDb->StartTrans();
+
 		// ---------------------- 1. ----------------------
 		// let's generate all the tables's
 		$gBitInstallDb->StartTrans();
@@ -689,6 +701,14 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 		} else {
 			$gBitInstaller->CompleteTrans();
 		}
+
+		// Matching CompleteTrans() for the outer StartTrans() above - this is the one that
+		// actually commits or rolls back on the shared connection (all the StartTrans()/
+		// CompleteTrans() pairs in between were nested inside this one). Whether it ends up
+		// committing or rolling back is still driven by whatever ran between the two: a
+		// RollbackTrans() anywhere above (including the one immediately preceding this) calls
+		// FailTrans() first, which sticks regardless of nesting depth.
+		$gBitInstallDb->CompleteTrans();
 
 		// display the confirmation page
 		$app = '_done';
