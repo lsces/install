@@ -44,7 +44,7 @@
 					<div class="form-group">
 						{forminput label="checkbox"}
 							<script>/* <![CDATA[ */
-								document.write("<input name=\"switcher\" id=\"switcher\" type=\"checkbox\" checked onclick=\"BitBase.switchCheckboxes(this.form.id,'packages[]','switcher')\" /> Batch (de)select all Packages and Services on this page");
+								document.write("<input name=\"switcher\" id=\"switcher\" type=\"checkbox\" onclick=\"BitBase.switchCheckboxes(this.form.id,'packages[]','switcher')\" /> Batch (de)select all Packages and Services on this page");
 							/* ]]> */</script>
 						{/forminput}
 					</div>
@@ -56,7 +56,7 @@
 							<div class="well">
 								<label class="control-label" for="{$package}">{biticon ipackage=$package iname="pkg_$package" iexplain=$package}</label>
 								{forminput label="checkbox"}
-									<input type="checkbox" name="packages[]" value="{$package}" id="{$package}" checked="checked" /> <strong>{$package|capitalize}</strong></label>
+									<input type="checkbox" name="packages[]" value="{$package}" id="{$package}" /> <strong>{$package|capitalize}</strong></label>
 									{formhelp note=$item.info|default:'' is_installer=1}
 									{formhelp note="<strong>Location</strong>: `$item.url|default:''`"}
 									{formhelp package=$package}
