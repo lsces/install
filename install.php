@@ -87,8 +87,14 @@ if( !empty( $_REQUEST['reload'] )) {
 }
 
 // for pages that should only be shown during a first install
-// Drive first-install mode from DB state only — installer access is controlled externally via symlink
-if( !empty( $gBitDbType ) && $gBitInstaller->isInstalled() ) {
+// Drive first-install mode from DB state only at the start of a fresh visit (step 0) - installer
+// access is controlled externally via symlink. Only check here, not on every step: isInstalled()
+// checks kernel, which becomes installed as soon as the Packages step runs - mid-flow (step > 0)
+// that would wrongly end first-install mode before the rest of the sequence (Settings, Content)
+// has had a chance to run, even though $_SESSION['first_install'] correctly says we're still
+// mid-flow. A stale leftover session flag from an earlier, fully-completed install only ever
+// matters on a fresh step-0 visit anyway.
+if( empty( $step ) && !empty( $gBitDbType ) && $gBitInstaller->isInstalled() ) {
 	unset( $_SESSION['first_install'] );
 }
 if( empty( $gBitDbType ) || isset( $_SESSION['first_install'] ) ) {
