@@ -198,7 +198,17 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 				}
 				// Install tables - $build is empty when we don't pick tables, when un / reinstalling packages
 				if (!empty( $gBitInstaller->mPackages[$package]['tables'] ) && is_array( $gBitInstaller->mPackages[$package]['tables'] ) && !empty( $build )) {
-					foreach ( array_keys( $gBitInstaller->mPackages[$package]['tables'] ) as $tableName ) {
+					// schema_inc.php declares tables in CREATE order (a table referenced by another
+					// table's FK is declared first, e.g. articles.article_status before articles.
+					// articles itself) - correct for CREATE, but exactly backwards for DROP: Firebird
+					// refuses to drop a table whose primary key is still used by a live FK elsewhere,
+					// so an uninstall needs the FK-holding table dropped before the one it references.
+					// Reverse the order for DROP only; CREATE/REPLACE keep the declared order.
+					$tableNames = array_keys( $gBitInstaller->mPackages[$package]['tables'] );
+					if( $build[0] == 'DROP' ) {
+						$tableNames = array_reverse( $tableNames );
+					}
+					foreach ( $tableNames as $tableName ) {
 						$completeTableName = $tablePrefix . $tableName;
 						// in case prefix has backticks for schema
 						$sql = $dict->CreateTableSQL( $completeTableName, $gBitInstaller->mPackages[$package]['tables'][$tableName], $build );
