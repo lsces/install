@@ -446,26 +446,33 @@ if( !empty( $_REQUEST['cancel'] ) ) {
 							// list of core tables where bitweaver might store relevant data
 							// firstly, we delete using the content ids
 							// order is important due to the constraints set in the schema
+							// list of [table, column] pairs, not table=>column - liberty_content_links
+							// needs cleaning on BOTH its own to_content_id and from_content_id columns,
+							// which an associative array can't represent twice under the same table key
+							// (found live: this used to carry a second, nonexistent 'liberty_content_
+							// from_links' "table" - from_content_id is a column on liberty_content_links
+							// itself, not a separate table - every real uninstall-with-content-removal
+							// was hitting a "table unknown" error on it)
 							$tables = [
-								'liberty_aliases'             => 'content_id',
-								'liberty_structures'          => 'content_id',
-								'liberty_content_hits'        => 'content_id',
-								'liberty_content_history'     => 'content_id',
-								'liberty_content_prefs'       => 'content_id',
-								'liberty_content_links'       => 'to_content_id',
-								'liberty_content_from_links'       => 'from_content_id',
-								'liberty_process_queue'       => 'content_id',
-								'liberty_content_permissions' => 'content_id',
-								'users_favorites_map'         => 'favorite_content_id',
+								[ 'liberty_aliases',             'content_id' ],
+								[ 'liberty_structures',          'content_id' ],
+								[ 'liberty_content_hits',        'content_id' ],
+								[ 'liberty_content_history',     'content_id' ],
+								[ 'liberty_content_prefs',       'content_id' ],
+								[ 'liberty_content_links',       'to_content_id' ],
+								[ 'liberty_content_links',       'from_content_id' ],
+								[ 'liberty_process_queue',       'content_id' ],
+								[ 'liberty_content_permissions', 'content_id' ],
+								[ 'users_favorites_map',         'favorite_content_id' ],
 								// This table needs to be fixed to use content_id instead of page_id
-								//'liberty_copyrights'          => 'content_id',
+								//[ 'liberty_copyrights',          'content_id' ],
 
 								// liberty comments are tricky. should we remove comments linked to the content being deleted?
 								// makes sense to me but only if boards are not installed - xing
-								//'liberty_comments'            => 'root_id',
+								//[ 'liberty_comments',            'root_id' ],
 							];
 							foreach( $rmContentIds as $contentId ) {
-								foreach( $tables as $table => $column ) {
+								foreach( $tables as [ $table, $column ] ) {
 									$delete = "
 										DELETE FROM `".$tablePrefix.$table."`
 										WHERE `$column`=?";
