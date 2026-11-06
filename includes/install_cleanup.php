@@ -138,7 +138,7 @@ if( !empty(  $_REQUEST['resolve_conflicts'] ) ) {
 			if( !empty( $insPerms[$perm] )) {
 				$gBitInstaller->mDb->query( $insPerms[$perm]['sql'] );
 				$fixedPermissions[] = $insPerms[$perm];
-				if( !empty( $roleMap[$insPerms[$perm][2]] )) {
+				if( !empty( $permMap[$insPerms[$perm][2]] )) {
 					$gBitUser->assignPermissionToRole( $perm, $permMap[$insPerms[$perm][2]] );
 				}
 			}
