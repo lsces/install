@@ -20,7 +20,6 @@
 		var bitRootUrl = "{$smarty.const.BIT_ROOT_URL}";
 	/* ]]> */</script>
 	<script src= "{$smarty.const.THEMES_PKG_URL}js/jquery-3.7.1.js"></script>
-	<script src= "{$smarty.const.THEMES_PKG_URL}js/jquery-ui-14.1.js"></script>
 	<script src= "{$smarty.const.THEMES_PKG_URL}js/bootstrap.js"></script>
 	<script src= "{$smarty.const.THEMES_PKG_URL}js/bitweaver.js"></script>
 </head>
