@@ -99,7 +99,6 @@ if (isset($_REQUEST['fSubmitDatabase']) || isset($_REQUEST['fUpdateTables'])) {
 		//"gBitDbCaseSensitivity" => $_REQUEST['dbcase'],
 		"bit_db_prefix"   => $_REQUEST['prefix_dst'],
 		"bit_root_url"    => $_REQUEST['baseurl'],
-		"auto_bug_submit" => isset( $_REQUEST['auto_bug_submit'] ) ? 'true' : 'false',
 		"is_live"         => isset( $_REQUEST['is_live'] ) ? 'true' : 'false',
 	];
 	create_config( $createHash );

@@ -72,9 +72,6 @@ $gBitSmarty->assign( 'gBitDbName', $gBitDbName );
 $gBitSmarty->assign( 'gBitDbCaseSensitivity', $gBitDbCaseSensitivity );
 $gBitSmarty->assign( 'db_prefix_bit', BIT_DB_PREFIX );
 $gBitSmarty->assign( 'bit_root_url', $bit_root_url );
-if( defined( 'AUTO_BUG_SUBMIT' ) ) {
-	$gBitSmarty->assign( 'auto_bug_submit', AUTO_BUG_SUBMIT );
-}
 
 $gBitSmarty->assign( 'gBitDbPassword_input', $gBitDbPassword );
 $gBitSmarty->assign( 'gBitDbPassword_print', preg_replace( '/./','&bull;',$gBitDbPassword ) );

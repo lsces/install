@@ -21,7 +21,6 @@
  * @var numeric $pParamHash['gBitDbCaseSensitivity']
  * @var string  $pParamHash['bit_db_prefix']
  * @var string  $pParamHash['bit_root_url']
- * @var boolean $pParamHash['auto_bug_submit']
  * @var boolean $pParamHash['is_live']
  * @return void
  */
@@ -39,7 +38,7 @@ function create_config( $pParamHash ) {
 	$bit_db_prefix  = addslashes( $bit_db_prefix );
 
 	// DSN-style hosts (pdo, and similarly-shaped types) embed the database name inline,
-	// e.g. "firebird:dbname=localhost:rdmcloud;charset=utf8;" - write that back out as a
+	// e.g. "firebird:dbname=localhost:yourdb;charset=utf8;" - write that back out as a
 	// concatenation against $gBitDbName rather than a dead literal, so the two settings
 	// can't silently drift apart later. Falls back to a plain literal for host strings
 	// that don't contain the db name (a bare hostname, most non-DSN driver types).
@@ -164,11 +163,6 @@ define( 'BIT_DB_PREFIX', '$bit_db_prefix' );
 define( 'IS_LIVE', $is_live );
 
 
-// if you set AUTO_BUG_SUBMIT to TRUE bitweaver will automatically email the team
-// with details regarding the error.  Alternatively you can submit bugs to
-// http://sourceforge.net/tracker/?group_id=141358&atid=749176 which will probably
-// get processed faster since more people have access to these.
-define( 'AUTO_BUG_SUBMIT', $auto_bug_submit );
 
 
 // This is the path from the server root to your bitweaver location.  i.e. if you

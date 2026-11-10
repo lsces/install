@@ -98,7 +98,6 @@ if( isset( $_REQUEST['submit_db_info'] ) ) {
 			"gBitDbCaseSensitivity" => $_REQUEST['dbcase'],
 			"bit_db_prefix"         => $_REQUEST['prefix'],
 			"bit_root_url"          => $_REQUEST['baseurl'],
-			"auto_bug_submit"       => !empty( $_REQUEST['auto_bug_submit'] ) ? 'true' : 'false',
 			"is_live"               => !empty( $_REQUEST['is_live'] ) ? 'true' : 'false',
 		];
 		create_config( $createHash );

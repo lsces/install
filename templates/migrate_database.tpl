@@ -233,12 +233,6 @@
 					{/forminput}
 				</div>
 
-				<div class="form-group">
-					{forminput label="checkbox"}
-						<input type="checkbox" name="auto_bug_submit" id="auto_bug_submit"{if $auto_bug_submit} checked="checked"{/if} />Automatically submit bugs
-						{formhelp note="Checking this box will automatically submit fatal database errors to the Bitweaver team. If you are running a live site, we recommend you check this box, as it will also avoid horrible error messages from appearing in such cases."}
-					{/forminput}
-				</div>
 			{/legend}
 		{/jstab}
 
