@@ -156,6 +156,11 @@ if( !empty( $_POST['signin'] ) ) {
 	}
 }
 
+// The installer sets the user id itself (login or cookie), not through the user load that makes the form ticket, and a registered user's POST needs one
+if( is_object( $gBitUser ) && $gBitUser->isRegistered() && empty( $gBitUser->mTicket ) ) {
+	$gBitUser->mTicket = substr( md5( session_id() . $gBitUser->mUserId ), 0, 20 );
+}
+
 // if we came from anywhere appart from some installer page, nuke all settings in the _SESSION and set first_install FALSE
 if(
 	( !isset( $_SESSION['first_install'] )
